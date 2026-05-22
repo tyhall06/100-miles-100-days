@@ -175,7 +175,10 @@ create policy "announcements_admin_write" on announcements
 -- HELPER VIEWS
 -- ============================================================================
 -- Pre-aggregated leaderboard view (faster than client-side aggregation).
-create or replace view leaderboard as
+-- security_invoker = on means the view runs as the calling user (anon/authenticated),
+-- which makes RLS on the underlying tables apply correctly.
+create or replace view leaderboard
+  with (security_invoker = on) as
   select
     p.code,
     p.display_name,
@@ -187,7 +190,8 @@ create or replace view leaderboard as
   group by p.code
   order by total_miles desc;
 
-create or replace view county_stats as
+create or replace view county_stats
+  with (security_invoker = on) as
   select
     p.county,
     count(distinct p.code)::int as participants,
@@ -201,8 +205,9 @@ create or replace view county_stats as
   group by p.county
   order by total_miles desc;
 
--- Resource analytics view (admin only via RLS on underlying tables)
-create or replace view resource_stats as
+-- Resource analytics view (admin only via grant below)
+create or replace view resource_stats
+  with (security_invoker = on) as
   select
     c.resource_id,
     coalesce(c.resource_name, s.resource_name) as resource_name,
@@ -221,6 +226,11 @@ create or replace view resource_stats as
            count(*) as session_count, sum(duration_seconds) as total_seconds
     from resource_sessions group by resource_id
   ) s on c.resource_id = s.resource_id;
+
+-- Views aren't covered by table grants — make them readable by anon/auth.
+grant select on leaderboard    to anon, authenticated;
+grant select on county_stats   to anon, authenticated;
+grant select on resource_stats to authenticated;  -- admin only
 
 -- ============================================================================
 -- DEMO REGISTRATION CODES (9001–9010)

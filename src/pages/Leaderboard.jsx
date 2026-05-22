@@ -21,8 +21,10 @@ export default function Leaderboard() {
   const [countyStats, setCountyStats] = useState([])
 
   useEffect(() => {
-    Promise.all([getStatsStatewide(), getLeaderboard(), getCountyStats()])
-      .then(([s, lb, cs]) => { setStats(s); setLeaderboard(lb); setCountyStats(cs) })
+    // Each fetch runs independently so one failure doesn't blank the page
+    getStatsStatewide().then(setStats).catch((e) => console.error('stats:', e))
+    getLeaderboard().then((d) => setLeaderboard(d || [])).catch((e) => console.error('leaderboard:', e))
+    getCountyStats().then((d) => setCountyStats(d || [])).catch((e) => console.error('countyStats:', e))
   }, [])
 
   const mostActiveCounty = countyStats[0]?.county || '—'

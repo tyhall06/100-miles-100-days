@@ -90,9 +90,12 @@ export async function getAllParticipants() {
 // ───────────────────────────────────────────────────────────────────────────
 
 export async function insertActivityLog(code, log) {
-  // Always write to local cache so Progress page is instant
-  localSaveLog(log)
-  if (!HAS_SUPABASE) return ok(null)
+  if (!HAS_SUPABASE) {
+    // Dev mode: localStorage is the only store
+    localSaveLog(log)
+    return ok(null)
+  }
+  // Prod mode: write only to Supabase (avoids duplicate-id bug across stores)
   const { error } = await supabase.from('activity_logs').insert({
     participant_code: code,
     date: log.date,
@@ -104,7 +107,6 @@ export async function insertActivityLog(code, log) {
 }
 
 export async function getMyActivityLogs(code) {
-  // Personal view — prefer Supabase (cross-device) but fall back to localStorage
   if (!HAS_SUPABASE) {
     const local = localGetLogs()
     const mock = getLogsForCode(code)
@@ -113,18 +115,14 @@ export async function getMyActivityLogs(code) {
     local.forEach((l) => { byId[l.id] = l })
     return Object.values(byId).sort((a, b) => b.date.localeCompare(a.date))
   }
+  // Prod: Supabase is the only source of truth — no localStorage merge
   const { data, error } = await supabase
     .from('activity_logs')
     .select('id, date, activity_type, miles, notes, created_at')
     .eq('participant_code', code)
     .order('date', { ascending: false })
-  if (error) { console.error(error); return [] }
-  // merge any unsynced localStorage logs
-  const local = localGetLogs()
-  const byId = {}
-  ;(data || []).forEach((l) => { byId[l.id] = l })
-  local.forEach((l) => { if (!byId[l.id]) byId[l.id] = l })
-  return Object.values(byId).sort((a, b) => b.date.localeCompare(a.date))
+  if (error) { console.error('getMyActivityLogs:', error); return [] }
+  return data || []
 }
 
 export async function getAllActivityLogs() {

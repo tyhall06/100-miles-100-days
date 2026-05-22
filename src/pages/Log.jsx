@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import CodeGate from '../components/CodeGate'
 import MilestoneModal from '../components/MilestoneModal'
-import { getCode, getDisplayName, getLocalLogs } from '../lib/storage'
-import { insertActivityLog } from '../lib/db'
+import { getCode, getDisplayName } from '../lib/storage'
+import { insertActivityLog, getMyActivityLogs } from '../lib/db'
 import { findNewMilestone, markCelebrated } from '../lib/milestones'
 import { useI18n } from '../lib/i18n'
 import {
@@ -63,9 +63,12 @@ function LogContent() {
   const [showHelper, setShowHelper] = useState(false)
 
   useEffect(() => {
-    const logs = getLocalLogs()
-    const total = logs.reduce((s, l) => s + l.miles, 0)
-    setTotalMiles(parseFloat(total.toFixed(2)))
+    const code = getCode()
+    if (!code) return
+    getMyActivityLogs(code).then((logs) => {
+      const total = logs.reduce((s, l) => s + Number(l.miles), 0)
+      setTotalMiles(parseFloat(total.toFixed(2)))
+    })
   }, [submitted])
 
   useEffect(() => {
