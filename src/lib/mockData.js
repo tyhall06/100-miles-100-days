@@ -78,7 +78,7 @@ const DIRECT_TYPES = ['Walking', 'Running', 'Hiking', 'Wheelchair Rolling']
 const INDIRECT_TYPES = ['Biking', 'Swimming', 'Dancing', 'Strength Training', 'Yoga', 'Gardening', 'Pickleball', 'Basketball', 'Other']
 const ALL_LOG_TYPES = [...DIRECT_TYPES, ...INDIRECT_TYPES]
 
-const CHALLENGE_START = '2026-06-15'
+const CHALLENGE_START = '2026-06-16'
 
 // ─── Generate 50 mock participants (codes 1001–1050) ─────────────────────────
 
@@ -193,7 +193,7 @@ export function getStatsStatewide() {
   const totalMiles = parseFloat(
     mockActivityLogs.reduce((sum, l) => sum + l.miles, 0).toFixed(1)
   )
-  const challengeEnd = new Date('2026-09-22T00:00:00')
+  const challengeEnd = new Date('2026-09-24T00:00:00')
   const today = new Date()
   const msPerDay = 1000 * 60 * 60 * 24
   const daysRemaining = Math.max(0, Math.ceil((challengeEnd - today) / msPerDay))

@@ -8,7 +8,7 @@ import { getCode, getDisplayName, getCounty } from '../lib/storage'
 import { getMyActivityLogs } from '../lib/db'
 import { useI18n } from '../lib/i18n'
 
-const CHALLENGE_START = new Date('2026-06-15T00:00:00')
+const CHALLENGE_START = new Date('2026-06-16T00:00:00')
 
 function getWeekLabel(dateStr, weekWord) {
   const d = new Date(dateStr + 'T00:00:00')
@@ -206,10 +206,10 @@ function ProgressContent() {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('prog.tableDate')}</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('prog.tableActivity')}</th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('prog.tableMiles')}</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('prog.tableNotes')}</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('prog.tableDate')}</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('prog.tableActivity')}</th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('prog.tableMiles')}</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('prog.tableNotes')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">

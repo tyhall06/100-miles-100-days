@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnnouncementBanner from './components/AnnouncementBanner'
+import SkipLink from './components/SkipLink'
+import LangSync from './components/LangSync'
 import { I18nProvider } from './lib/i18n'
 import Home from './pages/Home'
 import Log from './pages/Log'
@@ -15,14 +17,16 @@ import Privacy from './pages/Privacy'
 export default function App() {
   return (
     <I18nProvider>
+      <LangSync />
       <BrowserRouter>
         <div
           className="min-h-screen flex flex-col bg-gray-50"
           style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
         >
+          <SkipLink />
           <Navbar />
           <AnnouncementBanner />
-          <main className="flex-1">
+          <main id="main-content" tabIndex={-1} className="flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/log" element={<Log />} />

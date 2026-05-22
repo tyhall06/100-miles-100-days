@@ -175,7 +175,7 @@ export async function getStatsStatewide() {
     supabase.from('leaderboard').select('total_miles'),
   ])
   const totalMiles = (lbData || []).reduce((s, r) => s + Number(r.total_miles || 0), 0)
-  const challengeEnd = new Date('2026-09-22T00:00:00')
+  const challengeEnd = new Date('2026-09-24T00:00:00')
   const daysRemaining = Math.max(0, Math.ceil((challengeEnd - new Date()) / 86400000))
   return {
     totalParticipants: pCount || 0,

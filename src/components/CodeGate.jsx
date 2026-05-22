@@ -129,8 +129,9 @@ export default function CodeGate({ children }) {
 
           <form onSubmit={handleCodeSubmit} className="space-y-4">
             <div>
-              <label className={LABEL_CLASS}>{t('cg.codeLabel')}</label>
+              <label htmlFor="cg-code" className={LABEL_CLASS}>{t('cg.codeLabel')}</label>
               <input
+                id="cg-code"
                 type="text"
                 inputMode="numeric"
                 pattern="\d{4}"
@@ -144,9 +145,12 @@ export default function CodeGate({ children }) {
                 }}
                 placeholder="0000"
                 autoFocus
+                aria-invalid={!!codeError}
+                aria-describedby={codeError ? 'cg-code-error' : undefined}
+                required
               />
               {codeError && (
-                <p className="text-red-500 text-xs mt-2">{codeError}</p>
+                <p id="cg-code-error" role="alert" className="text-red-500 text-xs mt-2">{codeError}</p>
               )}
             </div>
 
@@ -184,10 +188,12 @@ export default function CodeGate({ children }) {
         <form onSubmit={handleProfileSubmit} className="space-y-5">
           {/* Display name */}
           <div>
-            <label className={LABEL_CLASS}>
-              {t('cg.nameLabel')} <span className="text-red-500">*</span>
+            <label htmlFor="cg-name" className={LABEL_CLASS}>
+              {t('cg.nameLabel')} <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
             </label>
             <input
+              id="cg-name"
               type="text"
               className={FIELD_CLASS}
               value={nameInput}
@@ -195,32 +201,39 @@ export default function CodeGate({ children }) {
               placeholder={t('cg.namePlaceholder')}
               maxLength={20}
               autoFocus
+              aria-describedby="cg-name-hint"
+              aria-invalid={!!nameError}
+              required
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p id="cg-name-hint" className="text-xs text-gray-400 mt-1">
               {t('cg.nameHint')}
               {nameInput.length > 0 && (
                 <span className="ml-2 text-gray-500">{nameInput.length}/20</span>
               )}
             </p>
-            {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
+            {nameError && <p role="alert" className="text-red-500 text-xs mt-1">{nameError}</p>}
           </div>
 
           {/* County */}
           <div>
-            <label className={LABEL_CLASS}>
-              {t('cg.countyLabel')} <span className="text-red-500">*</span>
+            <label htmlFor="cg-county" className={LABEL_CLASS}>
+              {t('cg.countyLabel')} <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
             </label>
             <select
+              id="cg-county"
               className={FIELD_CLASS}
               value={countyInput}
               onChange={(e) => { setCountyInput(e.target.value); setCountyError('') }}
+              aria-invalid={!!countyError}
+              required
             >
               <option value="">{t('cg.countyPlaceholder')}</option>
               {ALL_MO_COUNTIES.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
-            {countyError && <p className="text-red-500 text-xs mt-1">{countyError}</p>}
+            {countyError && <p role="alert" className="text-red-500 text-xs mt-1">{countyError}</p>}
           </div>
 
           <button

@@ -15,7 +15,7 @@ const STRINGS = {
 
     // ── Footer ──
     'footer.tagline': 'A statewide movement challenge',
-    'footer.dates': 'June 15 – September 22, 2026',
+    'footer.dates': 'June 16 – September 24, 2026',
     'footer.quickLinks': 'Quick Links',
     'footer.contact': 'Contact & Info',
     'footer.accessibility': 'Accessibility Statement',
@@ -26,7 +26,7 @@ const STRINGS = {
 
     // ── Home ──
     'home.tagline': 'A statewide movement challenge — your way.',
-    'home.dates': 'June 15 – September 22, 2026',
+    'home.dates': 'June 16 – September 24, 2026',
     'home.openTo': 'Open to all Missourians',
     'home.logYourMiles': 'Log Your Miles',
     'home.viewLeaderboard': 'View Leaderboard',
@@ -50,7 +50,7 @@ const STRINGS = {
     'home.totalMiles': 'Total Miles',
     'home.loggedStatewide': 'logged statewide',
     'home.daysRemaining': 'Days Remaining',
-    'home.untilSept22': 'until Sept 22',
+    'home.untilSept22': 'until Sept 24',
     'home.quote': "Walking is man's best medicine.",
 
     // Activity labels
@@ -246,6 +246,12 @@ const STRINGS = {
     'cg.countyPlaceholder': 'Select your Missouri county…',
     'cg.errCounty': 'Please select your county.',
     'cg.getStarted': 'Get Started',
+
+    // ── Accessibility ──
+    'a11y.skip': 'Skip to main content',
+    'a11y.menu': 'Toggle navigation menu',
+    'a11y.closeModal': 'Close dialog',
+    'a11y.dismissAnnouncement': 'Dismiss announcement',
   },
 
   es: {
@@ -257,7 +263,7 @@ const STRINGS = {
     'nav.greeting': 'Hola,',
 
     'footer.tagline': 'Un desafío estatal de movimiento',
-    'footer.dates': '15 de junio – 22 de septiembre, 2026',
+    'footer.dates': '16 de junio – 24 de septiembre, 2026',
     'footer.quickLinks': 'Enlaces Rápidos',
     'footer.contact': 'Contacto e Información',
     'footer.accessibility': 'Declaración de Accesibilidad',
@@ -267,7 +273,7 @@ const STRINGS = {
     'footer.eo': '© 2026 Extensión de la Universidad de Misuri. Empleador con igualdad de oportunidades / acceso / acción afirmativa / pro-discapacitados y veteranos.',
 
     'home.tagline': 'Un desafío estatal de movimiento — a tu manera.',
-    'home.dates': '15 de junio – 22 de septiembre, 2026',
+    'home.dates': '16 de junio – 24 de septiembre, 2026',
     'home.openTo': 'Abierto a todos los habitantes de Misuri',
     'home.logYourMiles': 'Registra tus Millas',
     'home.viewLeaderboard': 'Ver Clasificación',
@@ -291,7 +297,7 @@ const STRINGS = {
     'home.totalMiles': 'Millas Totales',
     'home.loggedStatewide': 'registradas en el estado',
     'home.daysRemaining': 'Días Restantes',
-    'home.untilSept22': 'hasta el 22 de sept.',
+    'home.untilSept22': 'hasta el 24 de sept.',
     'home.quote': 'Caminar es la mejor medicina del hombre.',
 
     'act.walking': 'Caminar',
@@ -477,6 +483,11 @@ const STRINGS = {
     'cg.countyPlaceholder': 'Selecciona tu condado de Misuri…',
     'cg.errCounty': 'Por favor selecciona tu condado.',
     'cg.getStarted': 'Comenzar',
+
+    'a11y.skip': 'Saltar al contenido principal',
+    'a11y.menu': 'Alternar menú de navegación',
+    'a11y.closeModal': 'Cerrar diálogo',
+    'a11y.dismissAnnouncement': 'Descartar anuncio',
   },
 }
 

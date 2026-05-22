@@ -108,14 +108,24 @@ export default function Leaderboard() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           {/* Tab bar */}
           <div className="flex items-center justify-between border-b border-gray-100 px-6">
-            <div className="flex gap-1">
+            <div className="flex gap-1" role="tablist" aria-label={t('lb.heading')}>
               <button
+                role="tab"
+                id="tab-individual"
+                aria-selected={activeTab === 'individual'}
+                aria-controls="panel-individual"
+                tabIndex={activeTab === 'individual' ? 0 : -1}
                 className={tabClass('individual')}
                 onClick={() => { setActiveTab('individual'); setSearch('') }}
               >
                 {t('lb.individual')}
               </button>
               <button
+                role="tab"
+                id="tab-county"
+                aria-selected={activeTab === 'county'}
+                aria-controls="panel-county"
+                tabIndex={activeTab === 'county' ? 0 : -1}
                 className={tabClass('county')}
                 onClick={() => { setActiveTab('county'); setSearch('') }}
               >
@@ -129,8 +139,12 @@ export default function Leaderboard() {
 
           {/* Search */}
           <div className="px-6 py-4 border-b border-gray-100">
+            <label htmlFor="lb-search" className="sr-only">
+              {activeTab === 'individual' ? t('lb.searchInd') : t('lb.searchCounty')}
+            </label>
             <input
-              type="text"
+              id="lb-search"
+              type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={activeTab === 'individual' ? t('lb.searchInd') : t('lb.searchCounty')}
@@ -140,14 +154,14 @@ export default function Leaderboard() {
 
           {/* Individual tab */}
           {activeTab === 'individual' && (
-            <div className="overflow-x-auto">
+            <div id="panel-individual" role="tabpanel" aria-labelledby="tab-individual" className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableName')}</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('lb.tableCounty')}</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableMiles')}</th>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableName')}</th>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('lb.tableCounty')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableMiles')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -176,15 +190,15 @@ export default function Leaderboard() {
 
           {/* County tab */}
           {activeTab === 'county' && (
-            <div className="overflow-x-auto">
+            <div id="panel-county" role="tabpanel" aria-labelledby="tab-county" className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableCounty')}</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('lb.tableParticipants')}</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableTotal')}</th>
-                    <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">{t('lb.tableAvg')}</th>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableCounty')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('lb.tableParticipants')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableTotal')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">{t('lb.tableAvg')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">

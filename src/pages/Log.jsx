@@ -213,23 +213,33 @@ function LogContent() {
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
           <div>
-            <label className={LABEL_CLASS}>{t('log.date')} <span className="text-red-500">*</span></label>
+            <label htmlFor="log-date" className={LABEL_CLASS}>
+              {t('log.date')} <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
+            </label>
             <input
+              id="log-date"
               type="date"
               className={FIELD_CLASS}
               value={form.date}
-              min="2026-06-15"
-              max="2026-09-22"
+              min="2026-06-16"
+              max="2026-09-24"
               onChange={(e) => set('date', e.target.value)}
+              required
             />
           </div>
 
           <div>
-            <label className={LABEL_CLASS}>{t('log.activityType')} <span className="text-red-500">*</span></label>
+            <label htmlFor="log-activity" className={LABEL_CLASS}>
+              {t('log.activityType')} <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
+            </label>
             <select
+              id="log-activity"
               className={FIELD_CLASS}
               value={form.activityType}
               onChange={(e) => { set('activityType', e.target.value); set('value', '') }}
+              required
             >
               {ACTIVITY_TYPES.map((a) => (
                 <option key={a} value={a}>
@@ -240,10 +250,12 @@ function LogContent() {
           </div>
 
           <div>
-            <label className={LABEL_CLASS}>
-              {t('log.milesLabel')} <span className="text-red-500">*</span>
+            <label htmlFor="log-miles" className={LABEL_CLASS}>
+              {t('log.milesLabel')} <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(required)</span>
             </label>
             <input
+              id="log-miles"
               type="number"
               min="0"
               step="0.01"
@@ -251,9 +263,10 @@ function LogContent() {
               value={form.value}
               onChange={(e) => set('value', e.target.value)}
               placeholder={t('log.milesPlaceholder')}
+              aria-describedby="log-miles-hint"
               required
             />
-            <p className="text-xs text-gray-400 mt-1">{t('log.notSure')}</p>
+            <p id="log-miles-hint" className="text-xs text-gray-400 mt-1">{t('log.notSure')}</p>
           </div>
 
           {overCap && (
@@ -320,18 +333,20 @@ function LogContent() {
           </div>
 
           <div>
-            <label className={LABEL_CLASS}>
+            <label htmlFor="log-notes" className={LABEL_CLASS}>
               {t('log.notes')} <span className="text-gray-400 font-normal">{t('log.optional')}</span>
             </label>
             <input
+              id="log-notes"
               type="text"
               className={FIELD_CLASS}
               value={form.notes}
               onChange={(e) => set('notes', e.target.value)}
               placeholder={t('log.notesPlaceholder')}
               maxLength={200}
+              aria-describedby="log-notes-counter"
             />
-            <p className="text-xs text-gray-400 mt-1">{form.notes.length}/200</p>
+            <p id="log-notes-counter" className="text-xs text-gray-400 mt-1">{form.notes.length}/200</p>
           </div>
 
           <button

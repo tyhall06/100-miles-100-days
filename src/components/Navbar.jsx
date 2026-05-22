@@ -71,14 +71,16 @@ export default function Navbar() {
             <button
               onClick={() => setMenuOpen((o) => !o)}
               className="text-gray-300 hover:text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
-              aria-label="Toggle menu"
+              aria-label={t('a11y.menu')}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav"
             >
               {menuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -89,7 +91,7 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-[#111111] border-t border-gray-800 px-4 pb-4 pt-2 flex flex-col gap-3">
+        <div id="mobile-nav" className="md:hidden bg-[#111111] border-t border-gray-800 px-4 pb-4 pt-2 flex flex-col gap-3">
           {navLinks.map((l) => (
             <NavLink
               key={l.to}

@@ -240,7 +240,7 @@ export default function Resources() {
 
         {/* Toast notification */}
         {toastVisible && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1A1A1A] text-white text-sm font-semibold px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-2">
+          <div role="status" aria-live="polite" className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1A1A1A] text-white text-sm font-semibold px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-2">
             {t('res.toast')}
           </div>
         )}
