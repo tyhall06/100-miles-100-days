@@ -158,8 +158,8 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-10">
             <div className="flex-shrink-0">
               <img
-                src="/2025flyer.jpg"
-                alt="100 Miles, 100 Days program flyer"
+                src="/2026flyer.jpg"
+                alt="100 Miles, 100 Days 2026 program flyer — join the challenge June 16 through September 24, 2026"
                 className="w-48 sm:w-56 rounded-xl shadow-2xl opacity-80 border border-gray-700"
               />
             </div>
