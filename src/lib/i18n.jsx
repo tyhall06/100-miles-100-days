@@ -19,6 +19,8 @@ const STRINGS = {
     'footer.quickLinks': 'Quick Links',
     'footer.contact': 'Contact & Info',
     'footer.accessibility': 'Accessibility Statement',
+    'footer.privacy': 'Privacy Statement',
+    'home.privacyBadge': 'Zero PII — Your privacy is protected. Learn more →',
     'footer.muext': 'MU Extension',
     'footer.eo': '© 2026 University of Missouri Extension. An equal opportunity/access/affirmative action/pro-disabled and veteran employer.',
 
@@ -259,6 +261,8 @@ const STRINGS = {
     'footer.quickLinks': 'Enlaces Rápidos',
     'footer.contact': 'Contacto e Información',
     'footer.accessibility': 'Declaración de Accesibilidad',
+    'footer.privacy': 'Aviso de Privacidad',
+    'home.privacyBadge': 'Cero datos personales — Tu privacidad está protegida. Más información →',
     'footer.muext': 'MU Extension',
     'footer.eo': '© 2026 Extensión de la Universidad de Misuri. Empleador con igualdad de oportunidades / acceso / acción afirmativa / pro-discapacitados y veteranos.',
 

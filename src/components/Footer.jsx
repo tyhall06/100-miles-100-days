@@ -32,9 +32,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#accessibility" className="hover:text-white transition-colors">
-                  {t('footer.accessibility')}
-                </a>
+                <Link to="/privacy" className="hover:text-white transition-colors">
+                  {t('footer.privacy')}
+                </Link>
               </li>
               <li>
                 <a href="https://extension.missouri.edu" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">

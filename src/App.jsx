@@ -10,6 +10,7 @@ import Leaderboard from './pages/Leaderboard'
 import Resources from './pages/Resources'
 import Community from './pages/Community'
 import Admin from './pages/Admin'
+import Privacy from './pages/Privacy'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/resources" element={<Resources />} />
               <Route path="/community" element={<Community />} />
               <Route path="/admin" element={<Admin />} />
+            <Route path="/privacy" element={<Privacy />} />
             </Routes>
           </main>
           <Footer />

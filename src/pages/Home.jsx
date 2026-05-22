@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getStatsStatewide } from '../lib/mockData'
+import { getStatsStatewide } from '../lib/db'
 import { useI18n } from '../lib/i18n'
 
 const ACTIVITY_CARDS = [
@@ -25,7 +26,11 @@ const HOW_IT_WORKS = [
 
 export default function Home() {
   const { t } = useI18n()
-  const stats = getStatsStatewide()
+  const [stats, setStats] = useState({ totalParticipants: 0, totalMiles: 0, daysRemaining: 100 })
+
+  useEffect(() => {
+    getStatsStatewide().then(setStats).catch((e) => console.error('home stats:', e))
+  }, [])
 
   return (
     <div className="flex flex-col">
@@ -63,6 +68,17 @@ export default function Home() {
               {t('home.viewLeaderboard')}
             </Link>
           </div>
+
+          <Link
+            to="/privacy"
+            className="inline-flex items-center gap-2 mt-8 text-xs text-gray-400 hover:text-[#4BB8C4] transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            {t('home.privacyBadge')}
+          </Link>
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 overflow-hidden leading-none">
