@@ -40,16 +40,19 @@ export default function Leaderboard() {
 
   const filteredIndividuals = useMemo(() => {
     const q = search.toLowerCase()
-    return leaderboard.filter(
-      (p) =>
-        p.display_name.toLowerCase().includes(q) ||
-        p.county.toLowerCase().includes(q)
-    )
+    // Hide participants without a display_name (unregistered demo codes) and null-guard
+    return leaderboard
+      .filter((p) => p.display_name)
+      .filter(
+        (p) =>
+          (p.display_name || '').toLowerCase().includes(q) ||
+          (p.county || '').toLowerCase().includes(q)
+      )
   }, [search, leaderboard])
 
   const filteredCounties = useMemo(() => {
     const q = search.toLowerCase()
-    return countyStats.filter((c) => c.county.toLowerCase().includes(q))
+    return countyStats.filter((c) => (c.county || '').toLowerCase().includes(q))
   }, [search, countyStats])
 
   const tabClass = (tab) =>

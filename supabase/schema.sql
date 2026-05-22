@@ -187,6 +187,7 @@ create or replace view leaderboard
   from participants p
   left join activity_logs l on l.participant_code = p.code
   where p.banned = false
+    and p.display_name is not null   -- only registered participants
   group by p.code
   order by total_miles desc;
 
@@ -201,7 +202,9 @@ create or replace view county_stats
          else 0 end as avg_miles
   from participants p
   left join activity_logs l on l.participant_code = p.code
-  where p.banned = false and p.county is not null
+  where p.banned = false
+    and p.county is not null
+    and p.display_name is not null   -- only registered participants
   group by p.county
   order by total_miles desc;
 

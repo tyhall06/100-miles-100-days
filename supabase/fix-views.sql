@@ -1,10 +1,12 @@
 -- ============================================================================
--- HOTFIX — run this once in the Supabase SQL editor to fix the Leaderboard
--- blanking bug. Safe to re-run.
+-- Run this in the Supabase SQL Editor. Safe to re-run.
+--
+-- Fixes:
+--   1. Adds security_invoker=on so views respect RLS on underlying tables
+--   2. Excludes unregistered participants (no display_name) from leaderboard
+--   3. Grants SELECT on views to anon + authenticated
 -- ============================================================================
 
--- Recreate the views with security_invoker so they respect the RLS policies
--- of the underlying tables (which already allow anon SELECT).
 create or replace view leaderboard
   with (security_invoker = on) as
   select
@@ -15,6 +17,7 @@ create or replace view leaderboard
   from participants p
   left join activity_logs l on l.participant_code = p.code
   where p.banned = false
+    and p.display_name is not null   -- only show registered participants
   group by p.code
   order by total_miles desc;
 
@@ -29,7 +32,9 @@ create or replace view county_stats
          else 0 end as avg_miles
   from participants p
   left join activity_logs l on l.participant_code = p.code
-  where p.banned = false and p.county is not null
+  where p.banned = false
+    and p.county is not null
+    and p.display_name is not null   -- only registered participants
   group by p.county
   order by total_miles desc;
 
@@ -54,10 +59,8 @@ create or replace view resource_stats
     from resource_sessions group by resource_id
   ) s on c.resource_id = s.resource_id;
 
--- Grant SELECT on the views to anon + authenticated.
--- (Views are not automatically granted, only tables are.)
-grant select on leaderboard      to anon, authenticated;
-grant select on county_stats     to anon, authenticated;
-grant select on resource_stats   to authenticated;  -- admin only
+grant select on leaderboard    to anon, authenticated;
+grant select on county_stats   to anon, authenticated;
+grant select on resource_stats to authenticated;
 
--- Done. Refresh your site — leaderboard should load.
+-- Done. Hard-refresh the live site (Ctrl+Shift+R) — leaderboard should load.
