@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-600">
+        <div className="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-500">
           <p>
             MU Extension | University of Missouri | 100 Miles, 100 Days | {t('footer.dates')}
           </p>

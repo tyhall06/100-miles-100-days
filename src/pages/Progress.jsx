@@ -153,7 +153,7 @@ function ProgressContent() {
           {streak > 0 && (
             <div
               className="mt-4 inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
-              style={{ background: 'rgba(28,94,144,0.10)', color: '#1C5E90', border: '1px solid rgba(28,94,144,0.30)' }}
+              style={{ background: 'rgba(241,184,45,0.15)', color: '#8B6914', border: '1px solid rgba(241,184,45,0.45)' }}
             >
               🔥 {t('prog.streak', { n: streak })}
             </div>

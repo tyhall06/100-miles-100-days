@@ -24,19 +24,58 @@ const HOW_IT_WORKS = [
   { num: '3', titleKey: 'home.step3Title', descKey: 'home.step3Desc' },
 ]
 
+// Curated, accurately attributed quotes about walking / movement (EN + ES).
+const WALKING_QUOTES = {
+  en: [
+    { text: 'Walking is man’s best medicine.', author: 'Hippocrates' },
+    { text: 'All truly great thoughts are conceived while walking.', author: 'Friedrich Nietzsche' },
+    { text: 'An early-morning walk is a blessing for the whole day.', author: 'Henry David Thoreau' },
+    { text: 'Above all, do not lose your desire to walk. Every day I walk myself into a state of well-being.', author: 'Søren Kierkegaard' },
+    { text: 'Walking is the best possible exercise. Habituate yourself to walk very far.', author: 'Thomas Jefferson' },
+    { text: 'The journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
+    { text: 'A vigorous five-mile walk will do more good for an unhappy but otherwise healthy adult than all the medicine and psychology in the world.', author: 'Paul Dudley White' },
+  ],
+  es: [
+    { text: 'Caminar es la mejor medicina del hombre.', author: 'Hipócrates' },
+    { text: 'Todos los pensamientos verdaderamente grandes se conciben caminando.', author: 'Friedrich Nietzsche' },
+    { text: 'Una caminata temprano por la mañana es una bendición para todo el día.', author: 'Henry David Thoreau' },
+    { text: 'Sobre todo, no pierdas las ganas de caminar. Cada día camino hacia un estado de bienestar.', author: 'Søren Kierkegaard' },
+    { text: 'Caminar es el mejor ejercicio posible. Acostúmbrate a caminar muy lejos.', author: 'Thomas Jefferson' },
+    { text: 'El viaje de mil millas comienza con un solo paso.', author: 'Lao Tsé' },
+    { text: 'Una caminata enérgica de cinco millas le hará más bien a un adulto sano pero infeliz que toda la medicina y la psicología del mundo.', author: 'Paul Dudley White' },
+  ],
+}
+
 export default function Home() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [stats, setStats] = useState({ totalParticipants: 0, totalMiles: 0, daysRemaining: 100 })
 
   useEffect(() => {
     getStatsStatewide().then(setStats).catch((e) => console.error('home stats:', e))
   }, [])
 
+  // Rotating quote
+  const quotes = WALKING_QUOTES[lang] || WALKING_QUOTES.en
+  const [quoteIdx, setQuoteIdx] = useState(0)
+
+  useEffect(() => {
+    setQuoteIdx(0)
+  }, [lang])
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setQuoteIdx((i) => (i + 1) % quotes.length)
+    }, 8000)
+    return () => clearInterval(id)
+  }, [quotes.length])
+
+  const quote = quotes[quoteIdx]
+
   return (
     <div className="flex flex-col">
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section className="bg-[#000000] relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-[#1C5E90]" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#F1B82D] via-[#BD5C2C] to-[#1C5E90]" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
           <div className="flex justify-center mb-8">
@@ -63,7 +102,7 @@ export default function Home() {
             </Link>
             <Link
               to="/leaderboard"
-              className="text-[#1C5E90] font-semibold text-base border border-[#1C5E90] px-6 py-4 rounded-xl hover:bg-[#1C5E90]/10 transition-colors"
+              className="bg-[#1C5E90] text-white font-bold text-lg px-8 py-4 rounded-xl hover:bg-[#164a73] transition-colors shadow-lg"
             >
               {t('home.viewLeaderboard')}
             </Link>
@@ -100,7 +139,7 @@ export default function Home() {
               <div key={s.label} className="bg-[#000000] rounded-2xl p-8 text-center shadow-lg">
                 <p className="text-4xl font-extrabold text-[#F1B82D] mb-1">{s.value}</p>
                 <p className="text-white font-semibold text-sm mb-1">{s.label}</p>
-                <p className="text-gray-500 text-xs">{s.sub}</p>
+                <p className="text-gray-400 text-xs">{s.sub}</p>
               </div>
             ))}
           </div>
@@ -152,36 +191,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── About / Quote ────────────────────────────────────────────────────── */}
-      <section className="py-16 bg-[#000000]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center gap-10">
-            <div className="flex-shrink-0">
-              <img
-                src="/2026flyer.jpg"
-                alt="100 Miles, 100 Days 2026 program flyer — join the challenge June 16 through September 24, 2026"
-                className="w-48 sm:w-56 rounded-xl shadow-2xl opacity-80 border border-gray-700"
+      {/* ── About / Rotating Quote ───────────────────────────────────────────── */}
+      <section className="py-20 bg-[#000000]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <svg className="w-12 h-12 mx-auto mb-6 text-[#F1B82D]/70" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.57-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
+          </svg>
+
+          <blockquote
+            key={quoteIdx}
+            className="text-white text-2xl sm:text-3xl font-light italic leading-relaxed mb-5 animate-[fadeIn_0.6s_ease]"
+          >
+            “{quote.text}”
+          </blockquote>
+          <cite className="text-[#F1B82D] text-sm font-semibold not-italic tracking-wide">
+            — {quote.author}
+          </cite>
+
+          {/* Rotation dots */}
+          <div className="flex justify-center gap-2 mt-8" role="tablist" aria-label="Quotes">
+            {quotes.map((q, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setQuoteIdx(i)}
+                aria-label={`Quote ${i + 1}`}
+                aria-selected={i === quoteIdx}
+                role="tab"
+                className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:ring-offset-2 focus:ring-offset-black ${
+                  i === quoteIdx ? 'w-6 bg-[#F1B82D]' : 'w-2.5 bg-gray-600 hover:bg-gray-500'
+                }`}
               />
-            </div>
+            ))}
+          </div>
 
-            <div className="text-center md:text-left flex-1">
-              <blockquote className="text-white text-xl sm:text-2xl font-light italic leading-relaxed mb-4 pl-6 border-l-4 border-[#F1B82D]">
-                {t('home.quote')}
-              </blockquote>
-              <cite className="text-gray-400 text-sm not-italic">— Hippocrates</cite>
-
-              <div className="mt-10 border-t border-gray-800 pt-8">
-                <p className="text-gray-400 text-base mb-5">
-                  {t('home.readyStart')}
-                </p>
-                <Link
-                  to="/log"
-                  className="inline-block bg-[#F1B82D] text-black font-bold px-8 py-3 rounded-xl hover:bg-[#d4a228] transition-colors"
-                >
-                  {t('home.logFirstMiles')}
-                </Link>
-              </div>
-            </div>
+          <div className="mt-12 border-t border-gray-800 pt-10">
+            <p className="text-gray-300 text-base mb-5">{t('home.readyStart')}</p>
+            <Link
+              to="/log"
+              className="inline-block bg-[#F1B82D] text-black font-bold px-8 py-3 rounded-xl hover:bg-[#d4a228] transition-colors shadow-lg"
+            >
+              {t('home.logFirstMiles')}
+            </Link>
           </div>
         </div>
       </section>
