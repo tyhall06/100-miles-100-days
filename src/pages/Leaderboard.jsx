@@ -58,7 +58,7 @@ export default function Leaderboard() {
   const tabClass = (tab) =>
     `px-5 py-2.5 text-sm font-bold transition-colors ${
       activeTab === tab
-        ? 'text-[#4BB8C4] border-b-2 border-[#4BB8C4]'
+        ? 'text-[#1C5E90] border-b-2 border-[#1C5E90]'
         : 'text-gray-500 hover:text-gray-800 border-b-2 border-transparent'
     }`
 
@@ -71,13 +71,13 @@ export default function Leaderboard() {
           <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
             Community Progress
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-2">{t('lb.heading')}</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#000000] mb-2">{t('lb.heading')}</h1>
           <p className="text-gray-500 text-sm">{t('lb.sub')}</p>
         </div>
 
         {/* Rivalry banner */}
         {rivalry && (
-          <div className="bg-gradient-to-r from-[#4BB8C4] to-[#1A1A1A] rounded-2xl p-5 text-white shadow-md flex items-center gap-4">
+          <div className="bg-gradient-to-r from-[#1C5E90] to-[#000000] rounded-2xl p-5 text-white shadow-md flex items-center gap-4">
             <div className="text-3xl" aria-hidden="true">⚔️</div>
             <div className="flex-1">
               <p className="text-xs font-bold uppercase tracking-widest text-[#F1B82D] mb-1">
@@ -97,7 +97,7 @@ export default function Leaderboard() {
             { label: t('lb.cardMiles'), value: stats.totalMiles.toLocaleString() + ' mi' },
             { label: t('lb.cardActiveCounty'), value: mostActiveCounty },
           ].map((s) => (
-            <div key={s.label} className="bg-[#1A1A1A] rounded-2xl p-6 text-center shadow-md">
+            <div key={s.label} className="bg-[#000000] rounded-2xl p-6 text-center shadow-md">
               <p className="text-2xl sm:text-3xl font-extrabold text-[#F1B82D] mb-1">{s.value}</p>
               <p className="text-gray-400 text-xs font-medium">{s.label}</p>
             </div>

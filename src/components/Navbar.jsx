@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { getDisplayName } from '../lib/storage'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { getDisplayName, clearParticipant } from '../lib/storage'
 import { useI18n } from '../lib/i18n'
 import LanguageToggle from './LanguageToggle'
 
@@ -8,11 +8,20 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [displayName, setDisplayName] = useState(null)
   const location = useLocation()
+  const navigate = useNavigate()
   const { t } = useI18n()
 
   useEffect(() => {
     setDisplayName(getDisplayName())
   }, [location])
+
+  function handleSignOut() {
+    if (!window.confirm(t('nav.signOutConfirm'))) return
+    clearParticipant()
+    setDisplayName(null)
+    setMenuOpen(false)
+    navigate('/')
+  }
 
   const navLinks = [
     { to: '/', label: t('nav.home') },
@@ -27,7 +36,7 @@ export default function Navbar() {
     }`
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#1A1A1A] shadow-lg">
+    <nav className="sticky top-0 z-50 bg-[#000000] shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -47,9 +56,18 @@ export default function Navbar() {
               </NavLink>
             ))}
             {displayName && (
-              <span className="text-gray-400 text-sm">
-                {t('nav.greeting')} <span className="text-white font-semibold">{displayName}</span>!
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 text-sm">
+                  {t('nav.greeting')} <span className="text-white font-semibold">{displayName}</span>!
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="text-xs text-gray-400 hover:text-white underline underline-offset-2 focus:outline-none focus:ring-2 focus:ring-[#F1B82D] rounded px-1"
+                >
+                  {t('nav.signOut')}
+                </button>
+              </div>
             )}
             <LanguageToggle />
             <Link
@@ -65,7 +83,7 @@ export default function Navbar() {
             <LanguageToggle />
             {displayName && (
               <span className="text-gray-400 text-xs">
-                Hi, <span className="text-white font-semibold">{displayName}</span>!
+                {t('nav.greeting')} <span className="text-white font-semibold">{displayName}</span>!
               </span>
             )}
             <button
@@ -110,6 +128,15 @@ export default function Navbar() {
           >
             {t('nav.logMiles')}
           </Link>
+          {displayName && (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="text-sm font-medium text-gray-400 hover:text-white text-center py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
+            >
+              {t('nav.signOut')}
+            </button>
+          )}
         </div>
       )}
     </nav>

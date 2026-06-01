@@ -169,9 +169,13 @@ export async function getCountyStats() {
 
 export async function getStatsStatewide() {
   if (!HAS_SUPABASE) return mockStatewide()
-  // Compute from views
+  // Only count participants who have actually registered (display_name set)
   const [{ count: pCount }, { data: lbData }] = await Promise.all([
-    supabase.from('participants').select('*', { count: 'exact', head: true }).eq('banned', false),
+    supabase
+      .from('participants')
+      .select('*', { count: 'exact', head: true })
+      .eq('banned', false)
+      .not('display_name', 'is', null),
     supabase.from('leaderboard').select('total_miles'),
   ])
   const totalMiles = (lbData || []).reduce((s, r) => s + Number(r.total_miles || 0), 0)

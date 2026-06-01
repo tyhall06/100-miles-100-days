@@ -137,7 +137,7 @@ function LogContent() {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-extrabold text-[#1A1A1A] mb-1">{t('log.confirm.title')}</h2>
+          <h2 className="text-2xl font-extrabold text-[#000000] mb-1">{t('log.confirm.title')}</h2>
           <p className="text-gray-500 text-sm mb-6">{encourage}</p>
 
           <div className="bg-gray-50 rounded-xl p-5 mb-6 text-left space-y-2">
@@ -155,7 +155,7 @@ function LogContent() {
             </div>
             <div className="border-t border-gray-200 pt-2 flex justify-between text-sm">
               <span className="text-gray-500">{t('log.confirm.newTotal')}</span>
-              <span className="font-extrabold text-[#1A1A1A] text-lg">{postTotal} mi</span>
+              <span className="font-extrabold text-[#000000] text-lg">{postTotal} mi</span>
             </div>
           </div>
 
@@ -183,7 +183,7 @@ function LogContent() {
             </button>
             <Link
               to="/progress"
-              className="border-2 border-[#1A1A1A] text-[#1A1A1A] font-bold py-3 rounded-xl hover:bg-gray-100 transition-colors"
+              className="border-2 border-[#000000] text-[#000000] font-bold py-3 rounded-xl hover:bg-gray-100 transition-colors"
             >
               {t('log.confirm.viewProgress')}
             </Link>
@@ -202,12 +202,12 @@ function LogContent() {
           <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
             {t('log.heading')}
           </span>
-          <h1 className="text-3xl font-extrabold text-[#1A1A1A] mb-1">
+          <h1 className="text-3xl font-extrabold text-[#000000] mb-1">
             {t('log.hi')} {displayName || t('log.there')}!
           </h1>
           <p className="text-gray-500 text-sm">
             {t('log.currentTotal')}{' '}
-            <span className="font-bold text-[#1A1A1A] text-base">{totalMiles} {t('log.miles')}</span>
+            <span className="font-bold text-[#000000] text-base">{totalMiles} {t('log.miles')}</span>
           </p>
         </div>
 
@@ -282,7 +282,7 @@ function LogContent() {
                 <span className="text-black font-extrabold text-sm">+</span>
               </div>
               <div>
-                <p className="text-sm font-bold text-[#1A1A1A]">
+                <p className="text-sm font-bold text-[#000000]">
                   {t('log.thisCountsAs')}{' '}
                   <span className="text-[#8B6914] text-lg">{livePreview}</span>{' '}
                   {t('log.milesTowardGoal')}
@@ -301,7 +301,7 @@ function LogContent() {
               aria-expanded={showHelper}
               className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
             >
-              <span className="text-sm font-semibold text-[#1A1A1A] flex items-center gap-2">
+              <span className="text-sm font-semibold text-[#000000] flex items-center gap-2">
                 <span aria-hidden="true">❓</span> {t('log.whatCounts')}
               </span>
               <span className={`text-gray-400 transition-transform ${showHelper ? 'rotate-180' : ''}`}>▾</span>
@@ -317,8 +317,8 @@ function LogContent() {
                     <p className="text-sm font-semibold text-gray-700 mt-1">{t('log.equalsOneMile')}</p>
                     <p className="text-xs text-gray-500 mt-2">{t('log.minutesExample')}</p>
                   </div>
-                  <div className="bg-[#4BB8C4]/10 border border-[#4BB8C4] rounded-xl p-4 text-center">
-                    <p className="text-2xl font-extrabold text-[#4BB8C4]">
+                  <div className="bg-[#1C5E90]/10 border border-[#1C5E90] rounded-xl p-4 text-center">
+                    <p className="text-2xl font-extrabold text-[#1C5E90]">
                       {t('log.stepsBox', { n: STEPS_PER_MILE.toLocaleString() })}
                     </p>
                     <p className="text-sm font-semibold text-gray-700 mt-1">{t('log.equalsOneMile')}</p>

@@ -12,6 +12,8 @@ const STRINGS = {
     'nav.community': 'Community',
     'nav.logMiles': 'Log Miles',
     'nav.greeting': 'Hi,',
+    'nav.signOut': 'Sign out',
+    'nav.signOutConfirm': 'Sign out and clear this code from this device?',
 
     // ── Footer ──
     'footer.tagline': 'A statewide movement challenge',
@@ -261,6 +263,8 @@ const STRINGS = {
     'nav.community': 'Comunidad',
     'nav.logMiles': 'Registrar Millas',
     'nav.greeting': 'Hola,',
+    'nav.signOut': 'Cerrar sesión',
+    'nav.signOutConfirm': '¿Cerrar sesión y borrar este código de este dispositivo?',
 
     'footer.tagline': 'Un desafío estatal de movimiento',
     'footer.dates': '16 de junio – 24 de septiembre, 2026',

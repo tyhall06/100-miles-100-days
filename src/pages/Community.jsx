@@ -123,12 +123,12 @@ export default function Community() {
           <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
             {t('com.connect')}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-2">{t('com.heading')}</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#000000] mb-2">{t('com.heading')}</h1>
           <p className="text-gray-500 max-w-xl mx-auto">{t('com.sub')}</p>
         </div>
 
         {/* Section B: Instagram Feed */}
-        <section className="bg-[#1A1A1A] rounded-2xl shadow-sm border border-gray-100 p-8">
+        <section className="bg-[#000000] rounded-2xl shadow-sm border border-gray-100 p-8">
           <div className="text-center mb-6">
             <h2 className="text-white text-2xl font-extrabold mb-2">{t('com.followMovement')}</h2>
             <p className="text-gray-400 text-sm">
@@ -171,13 +171,13 @@ export default function Community() {
 
           {/* Section C: Photo Upload */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-xl font-extrabold text-[#1A1A1A] mb-1">{t('com.sharePhoto')}</h2>
+            <h2 className="text-xl font-extrabold text-[#000000] mb-1">{t('com.sharePhoto')}</h2>
             <p className="text-gray-500 text-sm mb-5">{t('com.sharePhotoSub')}</p>
 
             {!isLoggedIn ? (
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
                 {t('com.pleaseEnterCode')}{' '}
-                <Link to="/log" className="text-[#4BB8C4] font-semibold underline">{t('nav.logMiles')}</Link>.
+                <Link to="/log" className="text-[#1C5E90] font-semibold underline">{t('nav.logMiles')}</Link>.
               </div>
             ) : (
               <form onSubmit={handlePhotoSubmit} className="space-y-4">
@@ -236,13 +236,13 @@ export default function Community() {
 
           {/* Section D: Success Stories & Tips */}
           <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-xl font-extrabold text-[#1A1A1A] mb-1">{t('com.shareStory')}</h2>
+            <h2 className="text-xl font-extrabold text-[#000000] mb-1">{t('com.shareStory')}</h2>
             <p className="text-gray-500 text-sm mb-5">{t('com.shareStorySub')}</p>
 
             {!isLoggedIn ? (
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-600">
                 {t('com.pleaseEnterCode')}{' '}
-                <Link to="/log" className="text-[#4BB8C4] font-semibold underline">{t('nav.logMiles')}</Link>.
+                <Link to="/log" className="text-[#1C5E90] font-semibold underline">{t('nav.logMiles')}</Link>.
               </div>
             ) : (
               <form onSubmit={handleStorySubmit} className="space-y-4">
@@ -280,7 +280,7 @@ export default function Community() {
         {/* Section E: Community Wall */}
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-extrabold text-[#1A1A1A]">{t('com.fromCommunity')}</h2>
+            <h2 className="text-2xl font-extrabold text-[#000000]">{t('com.fromCommunity')}</h2>
             {approved.length > 0 && (
               <span className="text-xs text-gray-400">{approved.length} {t('com.approved')}</span>
             )}
@@ -305,7 +305,7 @@ export default function Community() {
                   href="https://instagram.com/explore/tags/100miles100days"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block bg-[#1A1A1A] text-white font-bold px-5 py-2.5 rounded-xl hover:bg-black transition-colors"
+                  className="inline-block bg-[#000000] text-white font-bold px-5 py-2.5 rounded-xl hover:bg-black transition-colors"
                 >
                   {t('com.openIG')}
                 </a>
@@ -348,7 +348,7 @@ export default function Community() {
 
         {/* Toast */}
         {toast && (
-          <div role="status" aria-live="polite" className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1A1A1A] text-white text-sm font-semibold px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-2">
+          <div role="status" aria-live="polite" className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#000000] text-white text-sm font-semibold px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-2">
             <span aria-hidden="true">&#10003;</span> {toast}
           </div>
         )}

@@ -61,13 +61,13 @@ export default function MilestoneModal({ threshold, onClose }) {
           <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
             {t('ms.unlocked')}
           </span>
-          <h2 id="milestone-title" className="text-3xl font-extrabold text-[#1A1A1A] mb-2">{title}</h2>
+          <h2 id="milestone-title" className="text-3xl font-extrabold text-[#000000] mb-2">{title}</h2>
           <p id="milestone-desc" className="text-gray-600 text-sm mb-6">{sub}</p>
 
           <button
             ref={closeBtnRef}
             onClick={onClose}
-            className="w-full bg-[#1A1A1A] text-white font-bold py-3 rounded-xl hover:bg-black focus:outline-none focus:ring-4 focus:ring-[#F1B82D]/50 transition-colors"
+            className="w-full bg-[#000000] text-white font-bold py-3 rounded-xl hover:bg-black focus:outline-none focus:ring-4 focus:ring-[#F1B82D]/50 transition-colors"
           >
             {t('ms.keepGoing')}
           </button>

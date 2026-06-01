@@ -99,7 +99,7 @@ function ProgressContent() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#1A1A1A]">
+            <h1 className="text-3xl font-extrabold text-[#000000]">
               {t('prog.title', { name: displayName })}
             </h1>
             {county && <p className="text-gray-500 text-sm mt-1">{t('prog.county', { county })}</p>}
@@ -121,7 +121,7 @@ function ProgressContent() {
             { label: t('prog.daysActive'), value: daysActive, gold: false },
           ].map((s) => (
             <div key={s.label} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
-              <p className={`text-2xl font-extrabold mb-1 ${s.gold ? 'text-[#8B6914]' : 'text-[#1A1A1A]'}`}>
+              <p className={`text-2xl font-extrabold mb-1 ${s.gold ? 'text-[#8B6914]' : 'text-[#000000]'}`}>
                 {s.value}
               </p>
               <p className="text-xs text-gray-500 font-medium">{s.label}</p>
@@ -132,7 +132,7 @@ function ProgressContent() {
         {/* Progress bar + motivation */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold text-[#1A1A1A]">{t('prog.challengeProgress')}</h2>
+            <h2 className="font-bold text-[#000000]">{t('prog.challengeProgress')}</h2>
             <span className={`text-sm font-bold ${motivation.color}`}>
               {motivation.emoji} {pct}%
             </span>
@@ -153,7 +153,7 @@ function ProgressContent() {
           {streak > 0 && (
             <div
               className="mt-4 inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
-              style={{ background: 'rgba(75,184,196,0.12)', color: '#4BB8C4', border: '1px solid rgba(75,184,196,0.3)' }}
+              style={{ background: 'rgba(28,94,144,0.10)', color: '#1C5E90', border: '1px solid rgba(28,94,144,0.30)' }}
             >
               🔥 {t('prog.streak', { n: streak })}
             </div>
@@ -163,7 +163,7 @@ function ProgressContent() {
         {/* Weekly chart */}
         {weeklyData.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <h2 className="font-bold text-[#1A1A1A] mb-6">{t('prog.weekly')}</h2>
+            <h2 className="font-bold text-[#000000] mb-6">{t('prog.weekly')}</h2>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={weeklyData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
@@ -182,7 +182,7 @@ function ProgressContent() {
         {/* Activity log table */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h2 className="font-bold text-[#1A1A1A]">{t('prog.activityLog')}</h2>
+            <h2 className="font-bold text-[#000000]">{t('prog.activityLog')}</h2>
             <button
               onClick={() => setSortAsc((a) => !a)}
               className="text-xs text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1"

@@ -13,20 +13,20 @@ export default function Privacy() {
             <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
               Privacidad
             </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A]">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#000000]">
               Aviso de Privacidad
             </h1>
             <p className="text-gray-500 text-sm mt-2">Última actualización: junio 2026</p>
           </div>
 
           <div className="prose prose-sm sm:prose-base max-w-none text-gray-700 space-y-6">
-            <p className="text-lg text-[#1A1A1A] font-semibold">
+            <p className="text-lg text-[#000000] font-semibold">
               Este sitio está diseñado deliberadamente para recopilar la cantidad
               mínima posible de información. <strong>No recopilamos información
               personal identificable.</strong>
             </p>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Lo que SÍ recopilamos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Lo que SÍ recopilamos</h2>
             <ul className="list-disc list-inside space-y-2">
               <li><strong>Un código de 4 dígitos</strong> — asignado por el personal de MU Extension durante la inscripción. No está vinculado a tu nombre.</li>
               <li><strong>Un nombre para mostrar elegido por ti</strong> — sin nombres reales, máximo 20 caracteres. Aparece en la clasificación.</li>
@@ -35,7 +35,7 @@ export default function Privacy() {
               <li><strong>Análisis agregados de recursos</strong> — cuántas veces se hace clic en cada artículo o podcast. Sin identificadores adjuntos.</li>
             </ul>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Lo que NO recopilamos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Lo que NO recopilamos</h2>
             <ul className="list-disc list-inside space-y-2">
               <li>❌ Nombres reales</li>
               <li>❌ Direcciones de correo electrónico</li>
@@ -48,7 +48,7 @@ export default function Privacy() {
               <li>❌ Cookies de seguimiento o píxeles de redes sociales</li>
             </ul>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Cómo usamos los datos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Cómo usamos los datos</h2>
             <p>
               Los datos se usan únicamente para:
             </p>
@@ -62,13 +62,13 @@ export default function Privacy() {
               <strong>Nunca vendemos, compartimos ni transferimos tus datos</strong> a terceros.
             </p>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Dónde se almacenan los datos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Dónde se almacenan los datos</h2>
             <p>
               Los datos se almacenan en Supabase (una base de datos PostgreSQL alojada en
               servidores de EE. UU.). Todo el tráfico está cifrado mediante HTTPS.
             </p>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Envíos de la comunidad</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Envíos de la comunidad</h2>
             <p>
               Las fotos e historias que envíes son revisadas por el personal de MU Extension
               antes de aparecer públicamente. Tu nombre para mostrar y condado <strong>NO se
@@ -76,7 +76,7 @@ export default function Privacy() {
               anónimas para otros usuarios.
             </p>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Cookies y rastreo</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Cookies y rastreo</h2>
             <p>
               No usamos cookies de rastreo, píxeles de Facebook, Google Analytics u otras
               herramientas de seguimiento. Usamos almacenamiento local del navegador
@@ -84,22 +84,22 @@ export default function Privacy() {
               idioma en tu propio dispositivo.
             </p>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Tus derechos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Tus derechos</h2>
             <p>
               Puedes pedir que se elimine tu cuenta y todos los datos asociados en cualquier
               momento contactando a tu oficina local de MU Extension.
             </p>
 
-            <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Contacto</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Contacto</h2>
             <p>
               Si tienes preguntas sobre privacidad o quieres ejercer tus derechos, contacta:{' '}
-              <a href="mailto:extension@missouri.edu" className="text-[#4BB8C4] font-semibold underline">
+              <a href="mailto:extension@missouri.edu" className="text-[#1C5E90] font-semibold underline">
                 extension@missouri.edu
               </a>
             </p>
 
             <div className="mt-10 pt-6 border-t border-gray-200 text-center">
-              <Link to="/" className="text-[#4BB8C4] font-semibold hover:underline">
+              <Link to="/" className="text-[#1C5E90] font-semibold hover:underline">
                 ← Volver al inicio
               </Link>
             </div>
@@ -117,19 +117,19 @@ export default function Privacy() {
           <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
             Privacy
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A]">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#000000]">
             Privacy Statement
           </h1>
           <p className="text-gray-500 text-sm mt-2">Last updated: June 2026</p>
         </div>
 
         <div className="prose prose-sm sm:prose-base max-w-none text-gray-700 space-y-6">
-          <p className="text-lg text-[#1A1A1A] font-semibold">
+          <p className="text-lg text-[#000000] font-semibold">
             This site was deliberately designed to collect the minimum information
             possible. <strong>We do not collect personally identifying information.</strong>
           </p>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">What we DO collect</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">What we DO collect</h2>
           <ul className="list-disc list-inside space-y-2">
             <li><strong>A 4-digit code</strong> — assigned to you by MU Extension staff during registration. Not linked to your name.</li>
             <li><strong>A display name you choose</strong> — no real names; max 20 characters. Shown on the leaderboard.</li>
@@ -138,7 +138,7 @@ export default function Privacy() {
             <li><strong>Aggregate resource analytics</strong> — how many times each article or podcast is clicked. No identifiers attached.</li>
           </ul>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">What we DO NOT collect</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">What we DO NOT collect</h2>
           <ul className="list-disc list-inside space-y-2">
             <li>❌ Real names</li>
             <li>❌ Email addresses</li>
@@ -151,7 +151,7 @@ export default function Privacy() {
             <li>❌ Tracking cookies or social media pixels</li>
           </ul>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">How we use the data</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">How we use the data</h2>
           <p>
             Data is used only to:
           </p>
@@ -165,13 +165,13 @@ export default function Privacy() {
             <strong>We never sell, share, or transfer your data</strong> to third parties.
           </p>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Where data is stored</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">Where data is stored</h2>
           <p>
             Data is stored in Supabase (a PostgreSQL database hosted on US-based servers).
             All traffic is encrypted via HTTPS.
           </p>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Community submissions</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">Community submissions</h2>
           <p>
             Photos and stories you submit are reviewed by MU Extension staff before
             appearing publicly. Your display name and county are <strong>NOT shown</strong>{' '}
@@ -179,29 +179,29 @@ export default function Privacy() {
             users.
           </p>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Cookies and tracking</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">Cookies and tracking</h2>
           <p>
             We do not use tracking cookies, Facebook pixels, Google Analytics, or any
             other tracking tools. We use browser localStorage only to remember your
             4-digit code and language preference on your own device.
           </p>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Your rights</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">Your rights</h2>
           <p>
             You can request that your account and all associated data be deleted at any
             time by contacting your local MU Extension office.
           </p>
 
-          <h2 className="text-xl font-bold text-[#1A1A1A] pt-4">Contact</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">Contact</h2>
           <p>
             For privacy questions or to exercise your rights, contact:{' '}
-            <a href="mailto:extension@missouri.edu" className="text-[#4BB8C4] font-semibold underline">
+            <a href="mailto:extension@missouri.edu" className="text-[#1C5E90] font-semibold underline">
               extension@missouri.edu
             </a>
           </p>
 
           <div className="mt-10 pt-6 border-t border-gray-200 text-center">
-            <Link to="/" className="text-[#4BB8C4] font-semibold hover:underline">
+            <Link to="/" className="text-[#1C5E90] font-semibold hover:underline">
               ← Back to home
             </Link>
           </div>

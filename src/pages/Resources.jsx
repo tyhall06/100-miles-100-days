@@ -13,11 +13,11 @@ const CATEGORIES = [
 ]
 
 const CATEGORY_COLORS = {
-  'getting-started': { chip: 'text-white', chipStyle: { background: '#4BB8C4' }, borderStyle: { borderColor: 'rgba(75,184,196,0.4)' } },
+  'getting-started': { chip: 'text-white', chipStyle: { background: '#1C5E90' }, borderStyle: { borderColor: 'rgba(75,184,196,0.4)' } },
   walking:           { chip: 'text-white', chipStyle: { background: '#3aa8b2' }, borderStyle: { borderColor: 'rgba(75,184,196,0.4)' } },
   podcasts:          { chip: 'text-black', chipStyle: { background: '#F1B82D' }, borderStyle: { borderColor: 'rgba(241,184,45,0.5)' } },
-  handouts:          { chip: 'text-white', chipStyle: { background: '#4BB8C4' }, borderStyle: { borderColor: 'rgba(75,184,196,0.4)' } },
-  programs:          { chip: 'text-white', chipStyle: { background: '#1A1A1A' }, borderStyle: { borderColor: 'rgba(26,26,26,0.4)' } },
+  handouts:          { chip: 'text-white', chipStyle: { background: '#1C5E90' }, borderStyle: { borderColor: 'rgba(75,184,196,0.4)' } },
+  programs:          { chip: 'text-white', chipStyle: { background: '#000000' }, borderStyle: { borderColor: 'rgba(26,26,26,0.4)' } },
 }
 
 // Real MU Extension resources, hosted on Google Drive.
@@ -174,7 +174,7 @@ export default function Resources() {
           <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-4">
             {t('res.muext')}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-2">{t('res.heading')}</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#000000] mb-2">{t('res.heading')}</h1>
           <p className="text-gray-500 max-w-xl mx-auto">{t('res.sub')}</p>
         </div>
 
@@ -209,7 +209,7 @@ export default function Resources() {
                       >
                         {catLabel}
                       </span>
-                      <h3 className="font-bold text-[#1A1A1A] text-sm leading-snug">{resource.title}</h3>
+                      <h3 className="font-bold text-[#000000] text-sm leading-snug">{resource.title}</h3>
                     </div>
                   </div>
                   <p className="text-gray-500 text-sm leading-relaxed">{resource.desc}</p>
@@ -225,7 +225,7 @@ export default function Resources() {
                         : resource.type === 'video'
                         ? 'bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200'
                         : resource.type === 'program'
-                        ? 'bg-[#1A1A1A] text-[#F1B82D] hover:bg-black border border-[#1A1A1A]'
+                        ? 'bg-[#000000] text-[#F1B82D] hover:bg-black border border-[#000000]'
                         : 'bg-[#F1B82D] text-black hover:bg-[#d4a228]'
                     }`}
                     onClick={() => handleResourceClick(resource)}
@@ -240,13 +240,13 @@ export default function Resources() {
 
         {/* Toast notification */}
         {toastVisible && (
-          <div role="status" aria-live="polite" className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1A1A1A] text-white text-sm font-semibold px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-2">
+          <div role="status" aria-live="polite" className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#000000] text-white text-sm font-semibold px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-2">
             {t('res.toast')}
           </div>
         )}
 
         {/* CTA banner */}
-        <div className="bg-[#1A1A1A] rounded-2xl p-8 text-center">
+        <div className="bg-[#000000] rounded-2xl p-8 text-center">
           <h2 className="text-white text-xl font-extrabold mb-2">{t('res.cantFind')}</h2>
           <p className="text-gray-400 text-sm mb-6">{t('res.cantFindBody')}</p>
           <a

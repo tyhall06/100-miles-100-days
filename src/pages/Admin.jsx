@@ -68,13 +68,13 @@ function PasswordGate({ onAuth }) {
     <div className="min-h-[75vh] flex items-center justify-center bg-gray-50 px-4">
       <div className="bg-white rounded-2xl shadow-xl p-10 max-w-sm w-full">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 bg-[#1A1A1A] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 bg-[#000000] rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-7 h-7 text-[#F1B82D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1A1A1A] mb-1">Admin Access</h1>
+          <h1 className="text-2xl font-extrabold text-[#000000] mb-1">Admin Access</h1>
           <p className="text-gray-500 text-sm">MU Extension staff only</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -152,7 +152,7 @@ function AnnouncementEditor() {
   return (
     <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-        <h2 className="font-bold text-[#1A1A1A]">Site-wide Announcement</h2>
+        <h2 className="font-bold text-[#000000]">Site-wide Announcement</h2>
         {updated && (
           <span className="text-xs text-gray-400">
             Last updated {new Date(updated).toLocaleString()}
@@ -208,7 +208,7 @@ function ExportButton({ icon, title, onClick }) {
       className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 text-center hover:bg-gray-50 transition-colors"
     >
       <div className="text-3xl mb-2">{icon}</div>
-      <div className="font-bold text-[#1A1A1A]">{title}</div>
+      <div className="font-bold text-[#000000]">{title}</div>
       <div className="text-xs text-gray-500 mt-1">Download CSV</div>
     </button>
   )
@@ -351,7 +351,7 @@ function AdminDashboard({ onSignOut }) {
           </span>
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <h1 className="text-3xl font-extrabold text-[#1A1A1A]">MU Extension Admin</h1>
+              <h1 className="text-3xl font-extrabold text-[#000000]">MU Extension Admin</h1>
               <p className="text-gray-500 text-sm mt-1">100 Miles, 100 Days Dashboard</p>
             </div>
             <button
@@ -369,7 +369,7 @@ function AdminDashboard({ onSignOut }) {
 
         {/* Section 0: Challenge Overview */}
         <section>
-          <h2 className="font-bold text-[#1A1A1A] mb-4">Challenge Overview</h2>
+          <h2 className="font-bold text-[#000000] mb-4">Challenge Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <StatCard value={totalParticipants} label="Total Participants" />
             <StatCard value={totalMiles} label="Total Miles" />
@@ -383,7 +383,7 @@ function AdminDashboard({ onSignOut }) {
         {/* Section 1: Display Name Moderation */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-            <h2 className="font-bold text-[#1A1A1A]">Display Name Moderation</h2>
+            <h2 className="font-bold text-[#000000]">Display Name Moderation</h2>
             <span className="text-xs text-gray-400">{participants.length} participants</span>
           </div>
           <div className="overflow-x-auto">
@@ -462,7 +462,7 @@ function AdminDashboard({ onSignOut }) {
         {/* Section 1.5: Pending Submissions */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-            <h2 className="font-bold text-[#1A1A1A]">Pending Submissions</h2>
+            <h2 className="font-bold text-[#000000]">Pending Submissions</h2>
             <span className="inline-block bg-[#F1B82D] text-black text-xs font-bold px-3 py-1 rounded-full">
               {pending.length} pending
             </span>
@@ -485,7 +485,7 @@ function AdminDashboard({ onSignOut }) {
                         <span
                           className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                             s.type === 'photo'
-                              ? 'bg-[#4BB8C4] text-white'
+                              ? 'bg-[#1C5E90] text-white'
                               : 'bg-[#F1B82D] text-black'
                           }`}
                         >
@@ -547,7 +547,7 @@ function AdminDashboard({ onSignOut }) {
 
         {/* Section 1.75: Export Data */}
         <section>
-          <h2 className="font-bold text-[#1A1A1A] mb-4">Export Data</h2>
+          <h2 className="font-bold text-[#000000] mb-4">Export Data</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <ExportButton icon="👥" title="Participants" onClick={exportParticipants} />
             <ExportButton icon="📝" title="Activity Logs" onClick={exportActivityLogs} />
@@ -559,7 +559,7 @@ function AdminDashboard({ onSignOut }) {
         {/* Section 2: Resource Analytics */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-            <h2 className="font-bold text-[#1A1A1A]">Resource Analytics</h2>
+            <h2 className="font-bold text-[#000000]">Resource Analytics</h2>
             <span className="text-xs text-gray-400">Aggregate counts only — no user data</span>
           </div>
           <div className="overflow-x-auto">

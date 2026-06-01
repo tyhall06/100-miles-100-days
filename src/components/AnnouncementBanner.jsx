@@ -26,7 +26,7 @@ export default function AnnouncementBanner() {
   }
 
   return (
-    <div role="status" aria-live="polite" className="bg-[#4BB8C4] text-white">
+    <div role="status" aria-live="polite" className="bg-[#1C5E90] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
         <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}

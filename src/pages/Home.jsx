@@ -35,8 +35,8 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="bg-[#1A1A1A] relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-[#4BB8C4]" />
+      <section className="bg-[#000000] relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-[#1C5E90]" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
           <div className="flex justify-center mb-8">
@@ -63,7 +63,7 @@ export default function Home() {
             </Link>
             <Link
               to="/leaderboard"
-              className="text-[#4BB8C4] font-semibold text-base border border-[#4BB8C4] px-6 py-4 rounded-xl hover:bg-[#4BB8C4]/10 transition-colors"
+              className="text-[#1C5E90] font-semibold text-base border border-[#1C5E90] px-6 py-4 rounded-xl hover:bg-[#1C5E90]/10 transition-colors"
             >
               {t('home.viewLeaderboard')}
             </Link>
@@ -71,7 +71,7 @@ export default function Home() {
 
           <Link
             to="/privacy"
-            className="inline-flex items-center gap-2 mt-8 text-xs text-gray-400 hover:text-[#4BB8C4] transition-colors"
+            className="inline-flex items-center gap-2 mt-8 text-xs text-gray-400 hover:text-[#1C5E90] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -97,7 +97,7 @@ export default function Home() {
               { label: t('home.totalMiles'), value: stats.totalMiles.toLocaleString(), sub: t('home.loggedStatewide') },
               { label: t('home.daysRemaining'), value: stats.daysRemaining, sub: t('home.untilSept22') },
             ].map((s) => (
-              <div key={s.label} className="bg-[#1A1A1A] rounded-2xl p-8 text-center shadow-lg">
+              <div key={s.label} className="bg-[#000000] rounded-2xl p-8 text-center shadow-lg">
                 <p className="text-4xl font-extrabold text-[#F1B82D] mb-1">{s.value}</p>
                 <p className="text-white font-semibold text-sm mb-1">{s.label}</p>
                 <p className="text-gray-500 text-xs">{s.sub}</p>
@@ -111,7 +111,7 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-3">{t('home.howItWorks')}</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#000000] mb-3">{t('home.howItWorks')}</h2>
             <p className="text-gray-500 text-lg">{t('home.howItWorksSub')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -123,7 +123,7 @@ export default function Home() {
                 <div className="w-16 h-16 rounded-full bg-[#F1B82D] flex items-center justify-center text-black font-extrabold text-2xl mb-5 shadow-md">
                   {step.num}
                 </div>
-                <h3 className="text-xl font-bold text-[#1A1A1A] mb-3">{t(step.titleKey)}</h3>
+                <h3 className="text-xl font-bold text-[#000000] mb-3">{t(step.titleKey)}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{t(step.descKey)}</p>
               </div>
             ))}
@@ -135,7 +135,7 @@ export default function Home() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-extrabold text-[#1A1A1A] mb-2">{t('home.anyMovement')}</h2>
+            <h2 className="text-3xl font-extrabold text-[#000000] mb-2">{t('home.anyMovement')}</h2>
             <p className="text-gray-500">{t('home.anyMovementSub')}</p>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
@@ -153,7 +153,7 @@ export default function Home() {
       </section>
 
       {/* ── About / Quote ────────────────────────────────────────────────────── */}
-      <section className="py-16 bg-[#1A1A1A]">
+      <section className="py-16 bg-[#000000]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center gap-10">
             <div className="flex-shrink-0">
@@ -189,7 +189,7 @@ export default function Home() {
       {/* ── Instagram / Community ────────────────────────────────────────────── */}
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-extrabold text-[#1A1A1A] mb-3">{t('home.followMovement')}</h2>
+          <h2 className="text-3xl font-extrabold text-[#000000] mb-3">{t('home.followMovement')}</h2>
           <p className="text-gray-500 text-base mb-2">{t('home.followSub')}</p>
 
           {/* Placeholder grid — PRODUCTION: Replace with Curator.io or Juicer.io embed script */}
