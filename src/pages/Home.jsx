@@ -80,9 +80,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
           <div className="flex justify-center mb-8">
             <img
-              src="/2024logo.png"
-              alt="100 Miles, 100 Days"
-              className="w-full max-w-xs sm:max-w-sm md:max-w-md drop-shadow-2xl"
+              src="/100mileslogo.jpg"
+              alt="100 Miles, 100 Days — Join the Challenge, June 16 to September 24, 2026"
+              className="w-full max-w-md sm:max-w-lg md:max-w-2xl rounded-2xl shadow-2xl"
             />
           </div>
 
@@ -90,7 +90,7 @@ export default function Home() {
             {t('home.tagline')}
           </p>
           <p className="text-gray-400 text-base mb-10">
-            {t('home.dates')} &nbsp;&middot;&nbsp; {t('home.openTo')}
+            {t('home.openTo')}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
