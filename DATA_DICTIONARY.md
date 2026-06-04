@@ -11,12 +11,20 @@ web app, how the tables relate, and how to obtain and interpret the exported dat
 
 ## 1. Privacy & what is (and isn't) collected
 
-This app was deliberately built to collect **no personally identifying information (PII)**.
-There are **no** real names, emails, phone numbers, addresses, birthdates, IP addresses,
-or geolocation in the dataset.
+The app's database (and therefore this exported dataset) stores **no direct personal
+identifiers**: there are **no** real names, emails, phone numbers, addresses, birthdates,
+IP addresses, or geolocation in the data.
 
-Each participant is identified only by an **anonymous 4-digit code** assigned by MU
-Extension staff at registration. The code is *not* linked to a real identity inside this system.
+Each participant is identified only by a **4-digit code** assigned by MU Extension staff at
+registration. Within this dataset the code is **pseudonymous** — it carries no direct
+identifiers on its own.
+
+> **Re-identification caveat (important for IRB / data-handling):** the code is *not*
+> truly anonymous. MU Extension maintains a **separate mapping** (in its PEARS registration
+> system) between each code and the registrant's contact details, including email. Authorized
+> staff can therefore re-link a code to an individual. Treat this dataset as **pseudonymized,
+> not anonymized**, and store/share it accordingly (e.g., don't combine it with the PEARS
+> mapping outside an approved, secured workflow).
 
 ---
 

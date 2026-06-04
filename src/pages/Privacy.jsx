@@ -22,20 +22,33 @@ export default function Privacy() {
           <div className="prose prose-sm sm:prose-base max-w-none text-gray-700 space-y-6">
             <p className="text-lg text-[#000000] font-semibold">
               Este sitio está diseñado deliberadamente para recopilar la cantidad
-              mínima posible de información. <strong>No recopilamos información
-              personal identificable.</strong>
+              mínima posible de información. <strong>La base de datos del sitio web no
+              almacena identificadores personales directos</strong> — ni nombres, ni
+              correos electrónicos, ni datos de contacto.
             </p>
 
-            <h2 className="text-xl font-bold text-[#000000] pt-4">Lo que SÍ recopilamos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Lo que almacena este sitio web</h2>
             <ul className="list-disc list-inside space-y-2">
-              <li><strong>Un código de 4 dígitos</strong> — asignado por el personal de MU Extension durante la inscripción. No está vinculado a tu nombre.</li>
+              <li><strong>Un código de 4 dígitos</strong> — asignado por el personal de MU Extension durante la inscripción. El código es lo que identifica tu actividad en este sitio; tu nombre y correo no se almacenan aquí.</li>
               <li><strong>Un nombre para mostrar elegido por ti</strong> — sin nombres reales, máximo 20 caracteres. Aparece en la clasificación.</li>
               <li><strong>Tu condado de Misuri</strong> — para estadísticas a nivel estatal.</li>
               <li><strong>Registros de actividad</strong> — fecha, tipo de actividad, millas y notas opcionales (máximo 200 caracteres) que tú ingresas.</li>
               <li><strong>Análisis agregados de recursos</strong> — cuántas veces se hace clic en cada artículo o podcast. Sin identificadores adjuntos.</li>
             </ul>
 
-            <h2 className="text-xl font-bold text-[#000000] pt-4">Lo que NO recopilamos</h2>
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Vínculo con tu inscripción</h2>
+            <p>
+              Tu código de 4 dígitos se asignó cuando te inscribiste a través del sistema de
+              inscripción de MU Extension (PEARS). MU Extension conserva tus datos de
+              inscripción — incluido el correo electrónico con el que te registraste — en ese
+              sistema seguro e independiente, no en este sitio web. El personal autorizado de
+              MU Extension puede asociar tu código con tu registro allí (por ejemplo, para
+              enviarte recordatorios del desafío). Este sitio web nunca almacena ni muestra esa
+              información, y cualquier dato exportado para investigación contiene solo tu
+              código, nombre para mostrar, condado y actividad — sin identificadores directos.
+            </p>
+
+            <h2 className="text-xl font-bold text-[#000000] pt-4">Lo que NO almacena este sitio web</h2>
             <ul className="list-disc list-inside space-y-2">
               <li>❌ Nombres reales</li>
               <li>❌ Direcciones de correo electrónico</li>
@@ -126,19 +139,32 @@ export default function Privacy() {
         <div className="prose prose-sm sm:prose-base max-w-none text-gray-700 space-y-6">
           <p className="text-lg text-[#000000] font-semibold">
             This site was deliberately designed to collect the minimum information
-            possible. <strong>We do not collect personally identifying information.</strong>
+            possible. <strong>The website&rsquo;s database stores no direct personal
+            identifiers</strong> — no names, email addresses, or contact details.
           </p>
 
-          <h2 className="text-xl font-bold text-[#000000] pt-4">What we DO collect</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">What this website stores</h2>
           <ul className="list-disc list-inside space-y-2">
-            <li><strong>A 4-digit code</strong> — assigned to you by MU Extension staff during registration. Not linked to your name.</li>
+            <li><strong>A 4-digit code</strong> — assigned to you by MU Extension staff during registration. The code is what identifies your activity on this site; your name and email are not stored here.</li>
             <li><strong>A display name you choose</strong> — no real names; max 20 characters. Shown on the leaderboard.</li>
             <li><strong>Your Missouri county</strong> — for statewide statistics.</li>
             <li><strong>Activity logs</strong> — date, activity type, miles, and optional notes (max 200 characters) that you enter yourself.</li>
             <li><strong>Aggregate resource analytics</strong> — how many times each article or podcast is clicked. No identifiers attached.</li>
           </ul>
 
-          <h2 className="text-xl font-bold text-[#000000] pt-4">What we DO NOT collect</h2>
+          <h2 className="text-xl font-bold text-[#000000] pt-4">Linking back to your registration</h2>
+          <p>
+            Your 4-digit code was assigned when you registered through MU Extension&rsquo;s
+            registration system (PEARS). MU Extension keeps your registration details —
+            including the email you signed up with — in that separate, secure system, not on
+            this website. Authorized MU Extension staff can match your code to your
+            registration record there (for example, to send you challenge reminders).
+            This website never stores or displays that information, and any data exported for
+            research contains only your code, display name, county, and activity — no direct
+            identifiers.
+          </p>
+
+          <h2 className="text-xl font-bold text-[#000000] pt-4">What this website does NOT store</h2>
           <ul className="list-disc list-inside space-y-2">
             <li>❌ Real names</li>
             <li>❌ Email addresses</li>
