@@ -17,6 +17,11 @@ dist-ssr
 .env.local
 .env.production
 
+# Code-generation output — contains registrant emails (PII). Never commit.
+code-output/
+code-map.csv
+*-merge.csv
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
