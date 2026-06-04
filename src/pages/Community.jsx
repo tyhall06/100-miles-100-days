@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { getDisplayName, getCounty } from '../lib/storage'
 import { saveSubmission, getApprovedSubmissions } from '../lib/db'
 import { useI18n } from '../lib/i18n'
+import InstagramFeed from '../components/InstagramFeed'
 
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024 // 3MB
 const MAX_CAPTION = 200
@@ -137,21 +138,15 @@ export default function Community() {
             </p>
           </div>
 
-          {/* PRODUCTION: Replace placeholder grid with Curator.io or Juicer.io embed script */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="aspect-square bg-gray-800 rounded-xl flex items-center justify-center"
-              >
-                <InstagramIcon className="w-10 h-10 text-gray-600" />
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-gray-500 text-xs mb-6">
-            {t('com.feedSoon')}
-          </p>
+          <InstagramFeed
+            count={8}
+            gridClassName="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"
+            tileClassName="aspect-square rounded-xl"
+            placeholderClassName="bg-gray-800"
+            placeholderIcon={<InstagramIcon className="w-10 h-10 text-gray-600" />}
+            emptyNote={t('com.feedSoon')}
+            emptyNoteClassName="text-center text-gray-500 text-xs mb-6"
+          />
 
           <div className="text-center">
             <a
