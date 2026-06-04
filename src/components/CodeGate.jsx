@@ -227,6 +227,9 @@ export default function CodeGate({ children }) {
             <p className="text-center text-xs text-gray-400 mt-2">
               {t('cg.codeHint')}
             </p>
+            <p className="text-center text-xs text-gray-500 font-medium">
+              {t('cg.codeForgot')}
+            </p>
           </form>
         </div>
       </div>
