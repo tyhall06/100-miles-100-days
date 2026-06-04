@@ -5,6 +5,7 @@ import {
   updateSubmissionStatus, setBanned, getBannedCodes,
   resetParticipantData, resetParticipantName, getAllSubmissions,
   getAnnouncement, setAnnouncement,
+  getTeams, renameTeam, deleteTeam, mergeTeams, reassignParticipant,
 } from '../lib/db'
 import { toCSV, downloadCSV } from '../lib/csv'
 import { signInAdmin, signOutAdmin, getAdminSession, onAuthChange } from '../lib/auth'
@@ -222,9 +223,10 @@ function AdminDashboard({ onSignOut }) {
   const [resourceStats, setResourceStats] = useState({})
   const [allLogs, setAllLogs] = useState([])
   const [statewide, setStatewide] = useState({ totalParticipants: 0, totalMiles: 0, daysRemaining: 0 })
+  const [teams, setTeams] = useState([])
 
   async function refreshAll() {
-    const [p, banned, pend, appr, rs, logs, sw] = await Promise.all([
+    const [p, banned, pend, appr, rs, logs, sw, tm] = await Promise.all([
       getAllParticipants(),
       getBannedCodes(),
       getPendingSubmissions(),
@@ -232,6 +234,7 @@ function AdminDashboard({ onSignOut }) {
       getResourceStats(),
       getAllActivityLogs(),
       getStatsStatewide(),
+      getTeams(),
     ])
     setParticipants(p)
     setBannedSet(new Set(banned))
@@ -240,6 +243,7 @@ function AdminDashboard({ onSignOut }) {
     setResourceStats(rs)
     setAllLogs(logs)
     setStatewide(sw)
+    setTeams(tm)
   }
 
   useEffect(() => { refreshAll() }, [])
@@ -283,6 +287,44 @@ function AdminDashboard({ onSignOut }) {
     setBannedSet(next)
   }
 
+  const [mergeSource, setMergeSource] = useState('')
+  const [mergeTarget, setMergeTarget] = useState('')
+
+  const teamName = (id) => teams.find((tm) => tm.id === id)?.name || '—'
+
+  async function handleRenameTeam(id) {
+    const current = teamName(id)
+    const next = window.prompt('Rename team:', current === '—' ? '' : current)
+    if (next === null) return
+    const { error } = await renameTeam(id, next)
+    if (error) { window.alert(error.message || 'Could not rename team.'); return }
+    refreshAll()
+  }
+
+  async function handleDeleteTeam(id) {
+    if (!window.confirm(`Delete "${teamName(id)}"? Members will become solo (their miles are kept).`)) return
+    await deleteTeam(id)
+    refreshAll()
+  }
+
+  async function handleMergeTeams() {
+    if (!mergeSource || !mergeTarget || mergeSource === mergeTarget) return
+    if (!window.confirm(`Move everyone from "${teamName(mergeSource)}" into "${teamName(mergeTarget)}" and delete "${teamName(mergeSource)}"?`)) return
+    const { error } = await mergeTeams(mergeSource, mergeTarget)
+    if (error) { window.alert(error.message || 'Could not merge teams.'); return }
+    setMergeSource(''); setMergeTarget('')
+    refreshAll()
+  }
+
+  async function handleReassign(code, teamId) {
+    await reassignParticipant(code, teamId || null)
+    setParticipants((prev) =>
+      prev.map((p) => (p.code === code ? { ...p, team_id: teamId || null } : p))
+    )
+    // member counts changed — refresh the teams list
+    getTeams().then(setTeams).catch(() => {})
+  }
+
   async function handleModerate(id, status) {
     await updateSubmissionStatus(id, status)
     const [pend, appr] = await Promise.all([getPendingSubmissions(), getApprovedSubmissions()])
@@ -295,10 +337,11 @@ function AdminDashboard({ onSignOut }) {
       code: p.code,
       display_name: p.display_name || '',
       county: p.county || '',
+      team: p.team_id ? teamName(p.team_id) : '',
       status: bannedSet.has(p.code) ? 'banned' : 'active',
       created_at: p.created_at || '',
     }))
-    const csv = toCSV(rows, ['code', 'display_name', 'county', 'status', 'created_at'])
+    const csv = toCSV(rows, ['code', 'display_name', 'county', 'team', 'status', 'created_at'])
     downloadCSV(`100miles-participants-${todayStr()}.csv`, csv)
   }
 
@@ -393,6 +436,7 @@ function AdminDashboard({ onSignOut }) {
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Code</th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Display Name</th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">County</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Team</th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
                 </tr>
@@ -409,6 +453,19 @@ function AdminDashboard({ onSignOut }) {
                         )}
                       </td>
                       <td className="px-5 py-3 text-gray-500 hidden sm:table-cell">{p.county}</td>
+                      <td className="px-5 py-3 hidden md:table-cell">
+                        <select
+                          value={p.team_id || ''}
+                          onChange={(e) => handleReassign(p.code, e.target.value)}
+                          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 max-w-[10rem] focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
+                          aria-label={`Team for ${p.code}`}
+                        >
+                          <option value="">Solo</option>
+                          {teams.map((tm) => (
+                            <option key={tm.id} value={tm.id}>{tm.name}</option>
+                          ))}
+                        </select>
+                      </td>
                       <td className="px-5 py-3">
                         {banned ? (
                           <span className="inline-block bg-red-100 text-red-700 text-xs font-bold px-2.5 py-0.5 rounded-full">
@@ -457,6 +514,97 @@ function AdminDashboard({ onSignOut }) {
             Resetting a name will prompt the participant to choose a new one on their next login.
             {/* PRODUCTION: UPDATE Supabase participants SET display_name = NULL */}
           </p>
+        </section>
+
+        {/* Section 1.25: Team Management */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+            <h2 className="font-bold text-[#000000]">Team Management</h2>
+            <span className="text-xs text-gray-400">{teams.length} teams</span>
+          </div>
+
+          <div className="p-6 space-y-6">
+            {teams.length === 0 ? (
+              <p className="text-sm text-gray-500 text-center py-4">No teams have been created yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                      <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Team</th>
+                      <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Members</th>
+                      <th className="px-4 py-2.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {teams.map((tm) => (
+                      <tr key={tm.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-4 py-2.5 font-medium text-gray-900">{tm.name}</td>
+                        <td className="px-4 py-2.5 text-right text-gray-500">{tm.members}</td>
+                        <td className="px-4 py-2.5">
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() => handleRenameTeam(tm.id)}
+                              className="text-xs bg-blue-50 text-blue-800 border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors font-semibold"
+                            >
+                              Rename
+                            </button>
+                            <button
+                              onClick={() => handleDeleteTeam(tm.id)}
+                              className="text-xs bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-semibold"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Merge duplicates */}
+            {teams.length >= 2 && (
+              <div className="border-t border-gray-100 pt-5">
+                <p className="text-sm font-semibold text-gray-700 mb-2">Merge duplicate teams</p>
+                <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                  <select
+                    value={mergeSource}
+                    onChange={(e) => setMergeSource(e.target.value)}
+                    className="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
+                  >
+                    <option value="">Move everyone from…</option>
+                    {teams.map((tm) => (
+                      <option key={tm.id} value={tm.id}>{tm.name} ({tm.members})</option>
+                    ))}
+                  </select>
+                  <span className="text-gray-400 text-sm hidden sm:inline">→</span>
+                  <select
+                    value={mergeTarget}
+                    onChange={(e) => setMergeTarget(e.target.value)}
+                    className="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
+                  >
+                    <option value="">…into this team</option>
+                    {teams.map((tm) => (
+                      <option key={tm.id} value={tm.id}>{tm.name}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={handleMergeTeams}
+                    disabled={!mergeSource || !mergeTarget || mergeSource === mergeTarget}
+                    className="text-sm bg-[#F1B82D] text-black font-bold px-5 py-2 rounded-lg hover:bg-[#d4a228] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Merge
+                  </button>
+                </div>
+              </div>
+            )}
+            <p className="text-xs text-gray-400">
+              Reassign an individual to a different team using the Team dropdown in the participant table above.
+              Deleting or merging a team never deletes anyone's logged miles.
+            </p>
+          </div>
         </section>
 
         {/* Section 1.5: Pending Submissions */}

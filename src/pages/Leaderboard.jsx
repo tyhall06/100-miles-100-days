@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { getLeaderboard, getCountyStats, getStatsStatewide } from '../lib/db'
+import { getLeaderboard, getCountyStats, getStatsStatewide, getTeamLeaderboard } from '../lib/db'
 import { useI18n } from '../lib/i18n'
 
 const MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' }
@@ -19,12 +19,14 @@ export default function Leaderboard() {
   const [stats, setStats] = useState({ totalParticipants: 0, totalMiles: 0, daysRemaining: 0 })
   const [leaderboard, setLeaderboard] = useState([])
   const [countyStats, setCountyStats] = useState([])
+  const [teamStats, setTeamStats] = useState([])
 
   useEffect(() => {
     // Each fetch runs independently so one failure doesn't blank the page
     getStatsStatewide().then(setStats).catch((e) => console.error('stats:', e))
     getLeaderboard().then((d) => setLeaderboard(d || [])).catch((e) => console.error('leaderboard:', e))
     getCountyStats().then((d) => setCountyStats(d || [])).catch((e) => console.error('countyStats:', e))
+    getTeamLeaderboard().then((d) => setTeamStats(d || [])).catch((e) => console.error('teamStats:', e))
   }, [])
 
   const mostActiveCounty = countyStats[0]?.county || '—'
@@ -54,6 +56,16 @@ export default function Leaderboard() {
     const q = search.toLowerCase()
     return countyStats.filter((c) => (c.county || '').toLowerCase().includes(q))
   }, [search, countyStats])
+
+  const filteredTeams = useMemo(() => {
+    const q = search.toLowerCase()
+    return teamStats.filter((tm) => (tm.teamName || '').toLowerCase().includes(q))
+  }, [search, teamStats])
+
+  const searchPlaceholder =
+    activeTab === 'individual' ? t('lb.searchInd')
+      : activeTab === 'county' ? t('lb.searchCounty')
+        : t('lb.searchTeam')
 
   const tabClass = (tab) =>
     `px-5 py-2.5 text-sm font-bold transition-colors ${
@@ -131,6 +143,17 @@ export default function Leaderboard() {
               >
                 {t('lb.byCounty')}
               </button>
+              <button
+                role="tab"
+                id="tab-team"
+                aria-selected={activeTab === 'team'}
+                aria-controls="panel-team"
+                tabIndex={activeTab === 'team' ? 0 : -1}
+                className={tabClass('team')}
+                onClick={() => { setActiveTab('team'); setSearch('') }}
+              >
+                {t('lb.byTeam')}
+              </button>
             </div>
             <p className="text-xs text-gray-400 hidden sm:block">
               {t('lb.updatedNote')}
@@ -140,14 +163,14 @@ export default function Leaderboard() {
           {/* Search */}
           <div className="px-6 py-4 border-b border-gray-100">
             <label htmlFor="lb-search" className="sr-only">
-              {activeTab === 'individual' ? t('lb.searchInd') : t('lb.searchCounty')}
+              {searchPlaceholder}
             </label>
             <input
               id="lb-search"
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={activeTab === 'individual' ? t('lb.searchInd') : t('lb.searchCounty')}
+              placeholder={searchPlaceholder}
               className="w-full sm:max-w-xs border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:border-[#F1B82D]"
             />
           </div>
@@ -217,6 +240,44 @@ export default function Leaderboard() {
                     )
                   })}
                   {filteredCounties.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="text-center py-10 text-gray-400 text-sm">{t('lb.empty')}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Team tab */}
+          {activeTab === 'team' && (
+            <div id="panel-team" role="tabpanel" aria-labelledby="tab-team" className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
+                    <th scope="col" className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableTeam')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{t('lb.tableMembers')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('lb.tableTotal')}</th>
+                    <th scope="col" className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">{t('lb.tableAvg')}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredTeams.map((tm) => {
+                    const rank = teamStats.indexOf(tm) + 1
+                    return (
+                      <tr key={tm.teamId} className={`hover:bg-gray-50 transition-colors ${rankStyle(rank)}`}>
+                        <td className="px-5 py-3 text-center">
+                          {MEDAL[rank] || <span className="text-gray-400">{rank}</span>}
+                        </td>
+                        <td className="px-5 py-3 font-semibold text-gray-900">{tm.teamName}</td>
+                        <td className="px-5 py-3 text-right text-gray-500 hidden sm:table-cell">{tm.members}</td>
+                        <td className="px-5 py-3 text-right font-extrabold text-[#8B6914]">{tm.totalMiles} mi</td>
+                        <td className="px-5 py-3 text-right text-gray-500 hidden md:table-cell">{tm.avgMiles} mi</td>
+                      </tr>
+                    )
+                  })}
+                  {filteredTeams.length === 0 && (
                     <tr>
                       <td colSpan={5} className="text-center py-10 text-gray-400 text-sm">{t('lb.empty')}</td>
                     </tr>

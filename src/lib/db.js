@@ -13,9 +13,10 @@
 
 import { supabase, HAS_SUPABASE } from './supabase'
 import {
-  mockParticipants, mockActivityLogs,
+  mockParticipants, mockActivityLogs, mockTeams,
   DEMO_REGISTRATION_CODES, getLogsForCode, getLeaderboard as mockLeaderboard,
   getCountyStats as mockCountyStats, getStatsStatewide as mockStatewide,
+  getTeamLeaderboard as mockTeamLeaderboard,
   getTotalMilesForCode,
 } from './mockData'
 import {
@@ -28,6 +29,7 @@ import {
   getResourceClicks as localGetClicks, recordResourceClick as localRecordClick,
   getResourceSessions as localGetSessions, getResourceStats as localGetStats,
   saveLocalLog as localSaveLog, getLocalLogs as localGetLogs,
+  getLocalTeams, addLocalTeam, setLocalTeamSelection,
 } from './storage'
 import {
   getAnnouncement as localGetAnnouncement,
@@ -79,7 +81,7 @@ export async function getAllParticipants() {
   }
   const { data, error } = await supabase
     .from('participants')
-    .select('code, display_name, county, banned, created_at')
+    .select('code, display_name, county, banned, team_id, created_at')
     .order('code')
   if (error) { console.error(error); return [] }
   return data || []
@@ -196,6 +198,140 @@ export async function getTotalMilesForCodeAsync(code) {
     .eq('participant_code', code)
   if (error) { console.error(error); return 0 }
   return (data || []).reduce((s, r) => s + Number(r.miles), 0)
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// TEAMS
+// ───────────────────────────────────────────────────────────────────────────
+
+// All teams with their registered-member counts (for the registration search
+// step and admin tools). Sorted alphabetically.
+export async function getTeams() {
+  if (!HAS_SUPABASE) {
+    const counts = {}
+    mockParticipants.forEach((p) => {
+      if (p.team_id) counts[p.team_id] = (counts[p.team_id] || 0) + 1
+    })
+    const all = [...mockTeams, ...getLocalTeams()]
+    return all
+      .map((t) => ({ id: t.id, name: t.name, members: counts[t.id] || 0 }))
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+  }
+  const { data, error } = await supabase
+    .from('team_directory')
+    .select('id, name, members')
+  if (error) { console.error('getTeams', error); return [] }
+  return (data || []).map((r) => ({ id: r.id, name: r.name, members: r.members || 0 }))
+}
+
+// Create a team (or return the existing one if the name already exists,
+// case-insensitively). Returns { data: { id, name, existed }, error }.
+export async function createTeam(rawName) {
+  const name = (rawName || '').trim()
+  if (name.length < 2 || name.length > 40) {
+    return err(new Error('Team name must be 2–40 characters.'))
+  }
+  if (!HAS_SUPABASE) {
+    const before = getLocalTeams()
+    const dup = before.find((t) => t.name.toLowerCase() === name.toLowerCase())
+      || mockTeams.find((t) => t.name.toLowerCase() === name.toLowerCase())
+    const team = addLocalTeam(name)
+    return ok({ id: team.id, name: team.name, existed: !!dup })
+  }
+  // Case-insensitive duplicate check first (the unique index is the real guard).
+  const { data: existing } = await supabase
+    .from('teams')
+    .select('id, name')
+    .ilike('name', name)
+    .maybeSingle()
+  if (existing) return ok({ id: existing.id, name: existing.name, existed: true })
+
+  const { data, error } = await supabase
+    .from('teams')
+    .insert({ name })
+    .select('id, name')
+    .maybeSingle()
+  if (error) {
+    // 23505 = unique_violation (someone created it in the race window)
+    if (error.code === '23505') {
+      const { data: again } = await supabase
+        .from('teams').select('id, name').ilike('name', name).maybeSingle()
+      if (again) return ok({ id: again.id, name: again.name, existed: true })
+    }
+    return err(error)
+  }
+  return ok({ id: data.id, name: data.name, existed: false })
+}
+
+// Assign (or clear, with teamId = null) a participant's team.
+export async function setParticipantTeam(code, teamId) {
+  setLocalTeamSelection(teamId)  // keep the per-device copy in sync
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase
+    .from('participants')
+    .update({ team_id: teamId })
+    .eq('code', code)
+  return error ? err(error) : ok(null)
+}
+
+export async function getTeamLeaderboard() {
+  if (!HAS_SUPABASE) return mockTeamLeaderboard()
+  const { data, error } = await supabase
+    .from('team_leaderboard')
+    .select('team_id, team_name, members, total_miles, avg_miles')
+  if (error) { console.error('getTeamLeaderboard', error); return [] }
+  return (data || []).map((r) => ({
+    teamId: r.team_id,
+    teamName: r.team_name,
+    members: r.members,
+    totalMiles: Number(r.total_miles),
+    avgMiles: Number(r.avg_miles),
+  }))
+}
+
+// ── Admin team management ───────────────────────────────────────────────────
+
+export async function renameTeam(id, rawName) {
+  const name = (rawName || '').trim()
+  if (name.length < 2 || name.length > 40) {
+    return err(new Error('Team name must be 2–40 characters.'))
+  }
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase.from('teams').update({ name }).eq('id', id)
+  return error ? err(error) : ok(null)
+}
+
+// Move every member of `sourceId` into `targetId`, then delete the source team.
+export async function mergeTeams(sourceId, targetId) {
+  if (!sourceId || !targetId || sourceId === targetId) {
+    return err(new Error('Pick two different teams to merge.'))
+  }
+  if (!HAS_SUPABASE) return ok(null)
+  const { error: moveErr } = await supabase
+    .from('participants')
+    .update({ team_id: targetId })
+    .eq('team_id', sourceId)
+  if (moveErr) return err(moveErr)
+  const { error: delErr } = await supabase.from('teams').delete().eq('id', sourceId)
+  return delErr ? err(delErr) : ok(null)
+}
+
+// Delete a team. Members' team_id is set to NULL automatically (FK on delete set null).
+export async function deleteTeam(id) {
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase.from('teams').delete().eq('id', id)
+  return error ? err(error) : ok(null)
+}
+
+// Reassign a single participant to a team (or null for solo). Used to fix
+// fat-finger sign-up mistakes.
+export async function reassignParticipant(code, teamId) {
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase
+    .from('participants')
+    .update({ team_id: teamId || null })
+    .eq('code', code)
+  return error ? err(error) : ok(null)
 }
 
 // ───────────────────────────────────────────────────────────────────────────

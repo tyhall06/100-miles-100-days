@@ -82,10 +82,21 @@ const CHALLENGE_START = '2026-06-16'
 
 // ─── Generate 50 mock participants (codes 1001–1050) ─────────────────────────
 
+// ─── Mock teams ─────────────────────────────────────────────────────────────
+// A handful of seeded teams so the Teams leaderboard tab has data in dev mode.
+export const mockTeams = [
+  { id: 'team-trailblazers', name: 'Trailblazers' },
+  { id: 'team-solemates', name: 'Sole Mates' },
+  { id: 'team-striders', name: 'The Striders' },
+  { id: 'team-pacemakers', name: 'Pace Makers' },
+]
+
 export const mockParticipants = Array.from({ length: 50 }, (_, i) => ({
   code: String(1001 + i),
   display_name: DISPLAY_NAMES[i],
   county: COUNTIES[i % COUNTIES.length],
+  // First 30 participants are spread across the 4 teams; the rest fly solo.
+  team_id: i < 30 ? mockTeams[i % mockTeams.length].id : null,
   created_at: `2026-06-${String(1 + (i % 14)).padStart(2, '0')}T10:00:00Z`,
 }))
 
@@ -170,6 +181,26 @@ export function getLeaderboard() {
     }))
     .sort((a, b) => b.totalMiles - a.totalMiles)
     .slice(0, 25)
+}
+
+export function getTeamLeaderboard() {
+  const map = {}
+  mockTeams.forEach((t) => {
+    map[t.id] = { teamId: t.id, teamName: t.name, members: 0, totalMiles: 0 }
+  })
+  mockParticipants.forEach((p) => {
+    if (!p.team_id || !map[p.team_id]) return
+    map[p.team_id].members++
+    map[p.team_id].totalMiles += getTotalMilesForCode(p.code)
+  })
+  return Object.values(map)
+    .filter((t) => t.members > 0)
+    .map((t) => ({
+      ...t,
+      totalMiles: parseFloat(t.totalMiles.toFixed(1)),
+      avgMiles: parseFloat((t.totalMiles / t.members).toFixed(1)),
+    }))
+    .sort((a, b) => b.totalMiles - a.totalMiles)
 }
 
 export function getCountyStats() {

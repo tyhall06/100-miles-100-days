@@ -24,6 +24,37 @@ export function clearParticipant() {
   localStorage.removeItem('participant_code')
   localStorage.removeItem('display_name')
   localStorage.removeItem('county')
+  localStorage.removeItem('team_id')
+}
+
+// ── Teams (dev-mode only) ────────────────────────────────────────────────────
+// In production, teams live in Supabase. These helpers back the dev/localStorage
+// registration flow so the "create or join a team" step works without a backend.
+
+export function getLocalTeams() {
+  try {
+    const raw = localStorage.getItem('local_teams')
+    return raw ? JSON.parse(raw) : []
+  } catch { return [] }
+}
+
+export function addLocalTeam(name) {
+  const teams = getLocalTeams()
+  const existing = teams.find((t) => t.name.toLowerCase() === name.trim().toLowerCase())
+  if (existing) return existing
+  const team = { id: `local-${Date.now()}`, name: name.trim() }
+  teams.push(team)
+  localStorage.setItem('local_teams', JSON.stringify(teams))
+  return team
+}
+
+export function getTeamId() {
+  return localStorage.getItem('team_id') || null
+}
+
+export function setLocalTeamSelection(teamId) {
+  if (teamId) localStorage.setItem('team_id', teamId)
+  else localStorage.removeItem('team_id')
 }
 
 export function saveLocalLog(log) {

@@ -236,6 +236,79 @@ grant select on county_stats   to anon, authenticated;
 grant select on resource_stats to authenticated;  -- admin only
 
 -- ============================================================================
+-- TEAMS  (see teams-migration.sql for the standalone version)
+-- ============================================================================
+create table if not exists teams (
+  id          uuid         primary key default gen_random_uuid(),
+  name        varchar(40)  not null,
+  created_at  timestamptz  not null default now()
+);
+create unique index if not exists teams_name_lower_idx on teams (lower(name));
+
+alter table participants
+  add column if not exists team_id uuid references teams(id) on delete set null;
+create index if not exists participants_team_idx on participants(team_id);
+
+alter table teams enable row level security;
+
+drop policy if exists "teams_select_all" on teams;
+create policy "teams_select_all" on teams
+  for select using (true);
+
+drop policy if exists "teams_insert_anon" on teams;
+create policy "teams_insert_anon" on teams
+  for insert to anon
+  with check (char_length(btrim(name)) between 2 and 40);
+
+drop policy if exists "teams_admin_all" on teams;
+create policy "teams_admin_all" on teams
+  for all to authenticated using (true) with check (true);
+
+create or replace view team_leaderboard
+  with (security_invoker = on) as
+  select
+    t.id                                          as team_id,
+    t.name                                        as team_name,
+    count(distinct p.code)::int                   as members,
+    coalesce(sum(l.miles), 0)::numeric(10,1)      as total_miles,
+    case when count(distinct p.code) > 0
+         then (coalesce(sum(l.miles), 0) / count(distinct p.code))::numeric(10,1)
+         else 0 end                               as avg_miles
+  from teams t
+  join participants p
+    on p.team_id = t.id
+   and p.banned = false
+   and p.display_name is not null
+  left join activity_logs l on l.participant_code = p.code
+  group by t.id, t.name
+  order by total_miles desc;
+grant select on team_leaderboard to anon, authenticated;
+
+create or replace view team_directory
+  with (security_invoker = on) as
+  select
+    t.id, t.name,
+    count(p.code) filter (
+      where p.display_name is not null and p.banned = false
+    )::int as members
+  from teams t
+  left join participants p on p.team_id = t.id
+  group by t.id, t.name
+  order by lower(t.name);
+grant select on team_directory to anon, authenticated;
+
+create or replace view team_admin
+  with (security_invoker = on) as
+  select
+    t.id, t.name, t.created_at,
+    count(p.code)::int as members
+  from teams t
+  left join participants p on p.team_id = t.id
+  group by t.id, t.name, t.created_at
+  order by t.name;
+grant select on team_admin to authenticated;
+
+-- ============================================================================
 -- DEMO REGISTRATION CODES (9001–9010)
 -- Reusable demo accounts that have no display_name/county yet, so reviewers
 -- can experience the full registration flow.
