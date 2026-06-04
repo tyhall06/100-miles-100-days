@@ -109,6 +109,13 @@ drop policy if exists "participants_admin_all" on participants;
 create policy "participants_admin_all" on participants
   for all to authenticated using (true) with check (true);
 
+-- Column-level hardening: RLS gates rows, column privileges gate columns.
+-- Without this, the anon key (public, embedded in the JS bundle) could write to
+-- `banned` directly via the REST API — letting a banned code unban itself.
+-- Restrict anon UPDATE to exactly the three columns registration needs.
+revoke update on participants from anon;
+grant update (display_name, county, team_id) on participants to anon;
+
 -- ── activity_logs ──
 -- Anyone can read all logs (needed for leaderboard, no PII attached).
 drop policy if exists "logs_select_all" on activity_logs;
