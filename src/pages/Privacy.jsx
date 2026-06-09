@@ -105,10 +105,8 @@ export default function Privacy() {
 
             <h2 className="text-xl font-bold text-[#000000] pt-4">Contacto</h2>
             <p>
-              Si tienes preguntas sobre privacidad o quieres ejercer tus derechos, contacta:{' '}
-              <a href="mailto:extension@missouri.edu" className="text-[#1C5E90] font-semibold underline">
-                extension@missouri.edu
-              </a>
+              Si tienes preguntas sobre privacidad o quieres ejercer tus derechos,
+              comunícate con tu oficina local de MU Extension.
             </p>
 
             <div className="mt-10 pt-6 border-t border-gray-200 text-center">
@@ -220,10 +218,8 @@ export default function Privacy() {
 
           <h2 className="text-xl font-bold text-[#000000] pt-4">Contact</h2>
           <p>
-            For privacy questions or to exercise your rights, contact:{' '}
-            <a href="mailto:extension@missouri.edu" className="text-[#1C5E90] font-semibold underline">
-              extension@missouri.edu
-            </a>
+            For privacy questions or to exercise your rights, contact your local
+            MU Extension office.
           </p>
 
           <div className="mt-10 pt-6 border-t border-gray-200 text-center">

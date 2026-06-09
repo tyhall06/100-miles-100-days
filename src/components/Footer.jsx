@@ -27,11 +27,6 @@ export default function Footer() {
             <p className="text-white font-semibold text-sm mb-3">{t('footer.contact')}</p>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:extension@missouri.edu" className="hover:text-white transition-colors">
-                  extension@missouri.edu
-                </a>
-              </li>
-              <li>
                 <Link to="/privacy" className="hover:text-white transition-colors">
                   {t('footer.privacy')}
                 </Link>
@@ -45,11 +40,34 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-500">
+        <div className="border-t border-gray-800 mt-8 pt-6 text-center text-xs text-gray-500 space-y-2">
           <p>
             MU Extension | University of Missouri | 100 Miles, 100 Days | {t('footer.dates')}
           </p>
-          <p className="mt-1">{t('footer.eo')}</p>
+          <p>{t('footer.eo')}</p>
+          <p>{t('footer.copyright')}</p>
+          <p className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1">
+            <a href="https://missouri.edu/marks-identity-content" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline">
+              {t('footer.marks')}
+            </a>
+            <span aria-hidden="true">·</span>
+            <a href="https://missouri.edu/copyright" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline">
+              {t('footer.dmca')}
+            </a>
+            <span aria-hidden="true">·</span>
+            <a href="https://missouri.edu/digital-accessibility" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline">
+              {t('footer.accessibility')}
+            </a>
+            <span aria-hidden="true">·</span>
+            <Link to="/privacy" className="hover:text-white transition-colors underline">
+              {t('footer.privacyPolicy')}
+            </Link>
+          </p>
+          <p>
+            <a href="https://missouri.edu/feedback" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline">
+              {t('footer.feedback')}
+            </a>
+          </p>
         </div>
       </div>
     </footer>

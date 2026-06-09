@@ -6,6 +6,7 @@ import {
   resetParticipantData, resetParticipantName, getAllSubmissions,
   getAnnouncement, setAnnouncement,
   getTeams, renameTeam, deleteTeam, mergeTeams, reassignParticipant,
+  importParticipantCodes,
 } from '../lib/db'
 import { toCSV, downloadCSV } from '../lib/csv'
 import { signInAdmin, signOutAdmin, getAdminSession, onAuthChange } from '../lib/auth'
@@ -196,6 +197,94 @@ function AnnouncementEditor() {
           </button>
         </div>
         {/* PRODUCTION: UPSERT into Supabase announcements table; all clients poll on mount */}
+      </div>
+    </section>
+  )
+}
+
+function parseCodes(text) {
+  return (text || '')
+    .split(/[\s,;]+/)
+    .map((tok) => tok.trim())
+    .filter((tok) => /^\d{4}$/.test(tok))
+}
+
+function CodeImporter({ onImported }) {
+  const [raw, setRaw] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [result, setResult] = useState(null)
+  const [error, setError] = useState('')
+
+  const detected = parseCodes(raw)
+  const uniqueCount = new Set(detected).size
+
+  function handleFile(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => { setRaw(String(reader.result || '')); setError(''); setResult(null) }
+    reader.readAsText(file)
+    e.target.value = '' // allow re-selecting the same file
+  }
+
+  async function handleImport() {
+    setError(''); setResult(null)
+    if (uniqueCount === 0) { setError('No valid 4-digit codes found. Paste codes or upload your supabase-codes.csv.'); return }
+    setBusy(true)
+    const { data, error } = await importParticipantCodes(detected)
+    setBusy(false)
+    if (error) { setError(error.message || 'Import failed.'); return }
+    setResult(data)
+    setRaw('')
+    onImported?.()
+  }
+
+  return (
+    <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
+        <h2 className="font-bold text-[#000000]">Import Participant Codes</h2>
+      </div>
+      <div className="p-6 space-y-4">
+        <p className="text-sm text-gray-500">
+          Paste 4-digit codes (one per line, or comma-separated) or upload the
+          <span className="font-mono text-xs bg-gray-100 px-1.5 py-0.5 rounded mx-1">supabase-codes.csv</span>
+          file from the code generator. Only the codes are added — never emails or names.
+          Codes that already exist are skipped, so re-importing a growing list is safe.
+        </p>
+
+        <textarea
+          value={raw}
+          onChange={(e) => { setRaw(e.target.value); setError(''); setResult(null) }}
+          rows={5}
+          placeholder={'4821\n5093\n6210'}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:border-[#F1B82D]"
+        />
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <label className="text-sm font-semibold text-gray-700 cursor-pointer bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors inline-flex items-center gap-2 w-fit">
+            <span>📄 Upload CSV / TXT</span>
+            <input type="file" accept=".csv,.txt,text/csv,text/plain" onChange={handleFile} className="hidden" />
+          </label>
+          <span className="text-xs text-gray-400">
+            {uniqueCount > 0 ? `${uniqueCount} valid code${uniqueCount === 1 ? '' : 's'} detected` : 'No codes detected yet'}
+          </span>
+          <button
+            type="button"
+            onClick={handleImport}
+            disabled={busy || uniqueCount === 0}
+            className="sm:ml-auto bg-[#F1B82D] text-black font-bold px-6 py-2.5 rounded-xl hover:bg-[#d4a228] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {busy ? 'Importing…' : 'Import Codes'}
+          </button>
+        </div>
+
+        {error && <p role="alert" className="text-red-600 text-sm font-medium">{error}</p>}
+        {result && (
+          <p className="text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+            ✓ Imported {result.total} code{result.total === 1 ? '' : 's'}: {result.added} added,{' '}
+            {result.skipped} already existed.
+          </p>
+        )}
       </div>
     </section>
   )
@@ -409,6 +498,9 @@ function AdminDashboard({ onSignOut }) {
 
         {/* Section -1: Announcement editor */}
         <AnnouncementEditor />
+
+        {/* Section -0.5: Import participant codes */}
+        <CodeImporter onImported={refreshAll} />
 
         {/* Section 0: Challenge Overview */}
         <section>

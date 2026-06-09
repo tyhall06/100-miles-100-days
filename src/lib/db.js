@@ -87,6 +87,37 @@ export async function getAllParticipants() {
   return data || []
 }
 
+// Bulk-import participant codes (admin only — runs as an authenticated user).
+// Accepts an array of strings; keeps only unique, exact 4-digit codes.
+// Codes that already exist are skipped (never overwritten), so re-importing a
+// growing list is safe. Returns { data: { added, skipped, total }, error }.
+export async function importParticipantCodes(rawCodes) {
+  const cleaned = [...new Set(
+    (rawCodes || [])
+      .map((c) => String(c).trim())
+      .filter((c) => /^\d{4}$/.test(c))
+  )]
+  if (cleaned.length === 0) return ok({ added: 0, skipped: 0, total: 0 })
+  if (!HAS_SUPABASE) {
+    // Dev mode has no real participants table; report as if all were added.
+    return ok({ added: cleaned.length, skipped: 0, total: cleaned.length })
+  }
+  let added = 0
+  const CHUNK = 500
+  for (let i = 0; i < cleaned.length; i += CHUNK) {
+    const batch = cleaned.slice(i, i + CHUNK).map((code) => ({ code }))
+    // ignoreDuplicates: existing codes are left untouched; .select() returns
+    // only the rows actually inserted, giving an accurate "added" count.
+    const { data, error } = await supabase
+      .from('participants')
+      .upsert(batch, { onConflict: 'code', ignoreDuplicates: true })
+      .select('code')
+    if (error) return err(error)
+    added += (data || []).length
+  }
+  return ok({ added, skipped: cleaned.length - added, total: cleaned.length })
+}
+
 // ───────────────────────────────────────────────────────────────────────────
 // ACTIVITY LOGS
 // ───────────────────────────────────────────────────────────────────────────
