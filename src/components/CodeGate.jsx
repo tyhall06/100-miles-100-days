@@ -181,7 +181,7 @@ export default function CodeGate({ children }) {
         <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-[#F1B82D] rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
               </svg>
@@ -243,7 +243,7 @@ export default function CodeGate({ children }) {
         <div className="bg-white rounded-2xl shadow-xl p-8 sm:p-10 max-w-md w-full">
           <div className="text-center mb-6">
             <div className="w-16 h-16 bg-[#1C5E90] rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a3 3 0 10-2.83-4M7 11a3 3 0 10-2.83-4" />
               </svg>
@@ -334,7 +334,7 @@ export default function CodeGate({ children }) {
       <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-[#1C5E90] rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
