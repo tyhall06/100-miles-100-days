@@ -28,22 +28,20 @@ const HOW_IT_WORKS = [
 // Curated, accurately attributed quotes about walking / movement (EN + ES).
 const WALKING_QUOTES = {
   en: [
-    { text: 'Walking is man’s best medicine.', author: 'Hippocrates' },
+    { text: 'Walking is the best medicine.', author: 'Hippocrates' },
     { text: 'All truly great thoughts are conceived while walking.', author: 'Friedrich Nietzsche' },
     { text: 'An early-morning walk is a blessing for the whole day.', author: 'Henry David Thoreau' },
     { text: 'Above all, do not lose your desire to walk. Every day I walk myself into a state of well-being.', author: 'Søren Kierkegaard' },
     { text: 'Walking is the best possible exercise. Habituate yourself to walk very far.', author: 'Thomas Jefferson' },
     { text: 'The journey of a thousand miles begins with a single step.', author: 'Lao Tzu' },
-    { text: 'A vigorous five-mile walk will do more good for an unhappy but otherwise healthy adult than all the medicine and psychology in the world.', author: 'Paul Dudley White' },
   ],
   es: [
-    { text: 'Caminar es la mejor medicina del hombre.', author: 'Hipócrates' },
+    { text: 'Caminar es la mejor medicina.', author: 'Hipócrates' },
     { text: 'Todos los pensamientos verdaderamente grandes se conciben caminando.', author: 'Friedrich Nietzsche' },
     { text: 'Una caminata temprano por la mañana es una bendición para todo el día.', author: 'Henry David Thoreau' },
     { text: 'Sobre todo, no pierdas las ganas de caminar. Cada día camino hacia un estado de bienestar.', author: 'Søren Kierkegaard' },
     { text: 'Caminar es el mejor ejercicio posible. Acostúmbrate a caminar muy lejos.', author: 'Thomas Jefferson' },
     { text: 'El viaje de mil millas comienza con un solo paso.', author: 'Lao Tsé' },
-    { text: 'Una caminata enérgica de cinco millas le hará más bien a un adulto sano pero infeliz que toda la medicina y la psicología del mundo.', author: 'Paul Dudley White' },
   ],
 }
 
