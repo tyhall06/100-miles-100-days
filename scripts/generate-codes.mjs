@@ -152,7 +152,8 @@ function randomFreeCode() {
 
 let minted = 0, kept = 0, skipped = 0
 const seenEmails = new Map()
-const master = []   // ordered output records
+const master = []        // ordered output records
+const mintedRecords = [] // only the codes newly created on THIS run
 
 for (const r of dataRows) {
   const regId = String(r[col('registration_id')]).trim()
@@ -173,6 +174,7 @@ for (const r of dataRows) {
     usedCodes.add(code)
     rec = { registration_id: regId, first_name: first, last_name: last, email, status, code }
     existing.set(regId, rec)
+    mintedRecords.push(rec)
     minted++
   }
   if (email) {
@@ -202,6 +204,12 @@ const mergeRows = [['email', 'first_name', 'code'],
   ...master.filter((m) => m.email).map((m) => [m.email, m.first_name, m.code])]
 fs.writeFileSync(path.join(outDir, 'dotdigital-merge.csv'), toCsv(mergeRows))
 
+// Only the people who got a NEW code this run — use this to email just the
+// newcomers (so you never re-email people who already have their code).
+const newMergeRows = [['email', 'first_name', 'code'],
+  ...mintedRecords.filter((m) => m.email).map((m) => [m.email, m.first_name, m.code])]
+fs.writeFileSync(path.join(outDir, 'dotdigital-merge-new.csv'), toCsv(newMergeRows))
+
 // ── 5. Summary ────────────────────────────────────────────────────────────────
 console.log('\n────────── DONE ──────────')
 console.log(`  Newly minted codes : ${minted}`)
@@ -209,6 +217,7 @@ console.log(`  Kept (unchanged)   : ${kept}`)
 if (skipped) console.log(`  Skipped (status)   : ${skipped}`)
 console.log(`  Total codes        : ${codes.length}`)
 console.log(`\nFiles written to ${outDir}:`)
-console.log(`  code-map.csv         (MASTER — keep, contains emails, do not commit)`)
-console.log(`  supabase-codes.csv   (import into participants table)`)
-console.log(`  dotdigital-merge.csv (email + code for the welcome email)`)
+console.log(`  code-map.csv             (MASTER — keep, contains emails, do not commit)`)
+console.log(`  supabase-codes.csv       (ALL codes — import into participants; existing are skipped)`)
+console.log(`  dotdigital-merge.csv     (ALL email + code)`)
+console.log(`  dotdigital-merge-new.csv (ONLY this run's new people — email just these)`)
