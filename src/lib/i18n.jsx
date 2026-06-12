@@ -76,6 +76,13 @@ const STRINGS = {
 
     // ── Log ──
     'log.heading': 'Log Activity',
+    'log.preStart.title': "You're all set",
+    'log.preStart.body': 'The 100-mile challenge officially begins Tuesday, June 16. Your code is saved on this device — come back then to log your first miles.',
+    'log.preStart.daysToGo': 'days to go',
+    'log.preStart.dayToGo': 'day to go',
+    'log.preStart.meantime': 'In the meantime, check out the leaderboard and explore wellness resources to get ready.',
+    'log.preStart.viewLeaderboard': 'View the Leaderboard',
+    'log.preStart.exploreResources': 'Explore Resources',
     'log.hi': 'Hi,',
     'log.there': 'there',
     'log.currentTotal': 'Current total:',
@@ -352,6 +359,13 @@ const STRINGS = {
     'act.wheelchair': 'Silla de Ruedas',
 
     'log.heading': 'Registrar Actividad',
+    'log.preStart.title': 'Todo listo',
+    'log.preStart.body': 'El desafío de 100 millas comienza oficialmente el martes 16 de junio. Tu código está guardado en este dispositivo — vuelve ese día para registrar tus primeras millas.',
+    'log.preStart.daysToGo': 'días para empezar',
+    'log.preStart.dayToGo': 'día para empezar',
+    'log.preStart.meantime': 'Mientras tanto, mira la clasificación y explora los recursos de bienestar para prepararte.',
+    'log.preStart.viewLeaderboard': 'Ver la Clasificación',
+    'log.preStart.exploreResources': 'Explorar Recursos',
     'log.hi': 'Hola,',
     'log.there': 'amigo',
     'log.currentTotal': 'Total actual:',

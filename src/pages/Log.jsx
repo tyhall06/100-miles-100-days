@@ -32,6 +32,8 @@ const ACTIVITY_KEY = {
   Other: 'act.other',
 }
 
+const CHALLENGE_START = '2026-06-16'
+
 function todayStr() {
   return new Date().toISOString().split('T')[0]
 }
@@ -191,6 +193,51 @@ function LogContent() {
         </div>
       </div>
       </>
+    )
+  }
+
+  // ── Before the challenge starts: registered, but logging not open yet ───────
+  if (todayStr() < CHALLENGE_START) {
+    const daysToStart = Math.max(
+      0,
+      Math.ceil((new Date(CHALLENGE_START + 'T00:00:00') - new Date()) / 86400000)
+    )
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4 py-12">
+        <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-[#F1B82D] rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-extrabold text-[#000000] mb-2">
+            {t('log.preStart.title')}{displayName ? `, ${displayName}` : ''}!
+          </h2>
+          <p className="text-gray-600 mb-6">{t('log.preStart.body')}</p>
+          <div className="bg-[#000000] text-white rounded-xl py-5 mb-6">
+            <div className="text-4xl font-extrabold text-[#F1B82D]">{daysToStart}</div>
+            <div className="text-xs uppercase tracking-widest text-gray-400 mt-1">
+              {daysToStart === 1 ? t('log.preStart.dayToGo') : t('log.preStart.daysToGo')}
+            </div>
+          </div>
+          <p className="text-sm text-gray-500 mb-6">{t('log.preStart.meantime')}</p>
+          <div className="flex flex-col gap-3">
+            <Link
+              to="/leaderboard"
+              className="bg-[#F1B82D] text-black font-bold py-3 rounded-xl hover:bg-[#d4a228] transition-colors"
+            >
+              {t('log.preStart.viewLeaderboard')}
+            </Link>
+            <Link
+              to="/resources"
+              className="border-2 border-[#000000] text-[#000000] font-bold py-3 rounded-xl hover:bg-gray-100 transition-colors"
+            >
+              {t('log.preStart.exploreResources')}
+            </Link>
+          </div>
+        </div>
+      </div>
     )
   }
 
