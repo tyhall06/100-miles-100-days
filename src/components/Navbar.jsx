@@ -74,7 +74,7 @@ export default function Navbar() {
               to="/log"
               className="bg-[#F1B82D] text-black text-sm font-bold px-4 py-2 rounded-xl hover:bg-[#d4a228] transition-colors duration-150"
             >
-              {t('nav.logMiles')}
+              {displayName ? t('nav.logMiles') : t('nav.enterCode')}
             </Link>
           </div>
 
@@ -126,7 +126,7 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
             className="bg-[#F1B82D] text-black text-sm font-bold px-4 py-2 rounded-xl text-center hover:bg-[#d4a228] transition-colors duration-150 mt-1"
           >
-            {t('nav.logMiles')}
+            {displayName ? t('nav.logMiles') : t('nav.enterCode')}
           </Link>
           {displayName && (
             <button

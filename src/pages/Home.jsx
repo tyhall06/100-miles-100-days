@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getStatsStatewide } from '../lib/db'
+import { getDisplayName } from '../lib/storage'
 import { useI18n } from '../lib/i18n'
 import InstagramFeed from '../components/InstagramFeed'
 
@@ -107,7 +108,7 @@ export default function Home() {
               to="/log"
               className="bg-[#F1B82D] text-black font-bold text-lg px-8 py-4 rounded-xl hover:bg-[#d4a228] transition-colors shadow-lg"
             >
-              {t('home.logYourMiles')}
+              {getDisplayName() ? t('home.logYourMiles') : t('nav.enterCode')}
             </Link>
             <Link
               to="/leaderboard"
