@@ -155,10 +155,12 @@ A nullable **`team_id`** column on `participants` (**foreign key → `teams.id`*
 
 During registration, after choosing a display name and county, each participant
 **searches the existing teams and joins one, creates a new one, or skips (flies solo)**.
-Membership is **locked at sign-up**; only MU Extension staff can change it afterward
-(rename a team, merge duplicates, delete a team, or reassign an individual — to fix
-sign-up mistakes). Deleting or merging a team never deletes anyone's logged miles;
-former members simply revert to solo (or move to the merge target).
+A participant who flew solo can **join (or create) a team later from the My Progress
+page** — any miles already logged then count toward that team. Once on a team,
+**switching** teams is staff-only (to prevent team-hopping); MU Extension staff can
+rename a team, merge duplicates, delete a team, or reassign an individual to fix
+mistakes. Deleting or merging a team never deletes anyone's logged miles; former
+members simply revert to solo (or move to the merge target).
 
 ### 6.3 Grouping by team
 

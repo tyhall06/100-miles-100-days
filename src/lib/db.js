@@ -29,7 +29,7 @@ import {
   getResourceClicks as localGetClicks, recordResourceClick as localRecordClick,
   getResourceSessions as localGetSessions, getResourceStats as localGetStats,
   saveLocalLog as localSaveLog, getLocalLogs as localGetLogs,
-  getLocalTeams, addLocalTeam, setLocalTeamSelection,
+  getLocalTeams, addLocalTeam, setLocalTeamSelection, getTeamId,
 } from './storage'
 import {
   getAnnouncement as localGetAnnouncement,
@@ -303,6 +303,18 @@ export async function setParticipantTeam(code, teamId) {
     .update({ team_id: teamId })
     .eq('code', code)
   return error ? err(error) : ok(null)
+}
+
+// Read a single participant's current team_id (null = flying solo).
+export async function getParticipantTeamId(code) {
+  if (!HAS_SUPABASE) return getTeamId()
+  const { data, error } = await supabase
+    .from('participants')
+    .select('team_id')
+    .eq('code', code)
+    .maybeSingle()
+  if (error) { console.error('getParticipantTeamId', error); return null }
+  return data?.team_id || null
 }
 
 export async function getTeamLeaderboard() {

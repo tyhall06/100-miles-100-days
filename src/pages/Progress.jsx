@@ -5,8 +5,144 @@ import {
 } from 'recharts'
 import CodeGate from '../components/CodeGate'
 import { getCode, getDisplayName, getCounty } from '../lib/storage'
-import { getMyActivityLogs } from '../lib/db'
+import {
+  getMyActivityLogs, getTeams, createTeam, setParticipantTeam, getParticipantTeamId,
+} from '../lib/db'
+import { isProfane } from '../lib/filter'
 import { useI18n } from '../lib/i18n'
+
+const TEAM_FIELD_CLASS =
+  'w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm ' +
+  'focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:border-[#F1B82D] transition-colors'
+
+// Lets a participant who skipped (or wants to join) a team do so after sign-up.
+// Reuses the same DB calls as registration — purely additive, no schema change.
+function TeamCard({ code }) {
+  const { t } = useI18n()
+  const [teams, setTeams] = useState([])
+  const [myTeamId, setMyTeamId] = useState(undefined) // undefined = still loading
+  const [search, setSearch] = useState('')
+  const [newName, setNewName] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!code) return
+    Promise.all([getTeams(), getParticipantTeamId(code)])
+      .then(([list, tid]) => { setTeams(list || []); setMyTeamId(tid || null) })
+      .catch((e) => { console.error('TeamCard', e); setMyTeamId(null) })
+  }, [code])
+
+  const myTeam = teams.find((tm) => tm.id === myTeamId)
+  const filtered = teams.filter((tm) =>
+    tm.name.toLowerCase().includes(search.trim().toLowerCase())
+  )
+
+  async function join(teamId) {
+    setBusy(true); setError('')
+    try {
+      await setParticipantTeam(code, teamId)
+      setMyTeamId(teamId)
+      getTeams().then((l) => setTeams(l || [])).catch(() => {})
+    } catch (e) {
+      console.error('join team', e); setError(t('cg.teamErr'))
+    } finally { setBusy(false) }
+  }
+
+  async function create() {
+    const name = newName.trim()
+    if (name.length < 2 || name.length > 40) { setError(t('cg.teamErrName')); return }
+    if (isProfane(name)) { setError(t('cg.teamErrProfane')); return }
+    if (!window.confirm(t('cg.teamCreateConfirm', { name }))) return
+    setBusy(true); setError('')
+    const { data, error: createErr } = await createTeam(name)
+    if (createErr || !data) { setBusy(false); setError(t('cg.teamErr')); return }
+    if (data.existed) window.alert(t('cg.teamExisted'))
+    setNewName('')
+    await join(data.id)
+  }
+
+  if (myTeamId === undefined) return null // avoid flicker while loading
+
+  // Already on a team — show it; switching stays an admin action (no team-hopping).
+  if (myTeamId) {
+    return (
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <h2 className="font-bold text-[#000000] mb-1">{t('prog.team.heading')}</h2>
+        <p className="text-sm text-gray-700">
+          {t('prog.team.onTeam', { team: myTeam ? myTeam.name : '—' })}
+        </p>
+        <p className="text-xs text-gray-400 mt-2">{t('prog.team.lockedNote')}</p>
+      </div>
+    )
+  }
+
+  // Flying solo — let them join or create a team now.
+  return (
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 className="font-bold text-[#000000] mb-1">{t('prog.team.soloTitle')}</h2>
+      <p className="text-sm text-gray-500 mb-4">{t('prog.team.soloSub')}</p>
+
+      <input
+        type="search"
+        className={TEAM_FIELD_CLASS}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder={t('cg.teamSearch')}
+        aria-label={t('cg.teamSearch')}
+      />
+
+      <div className="mt-3 max-h-52 overflow-y-auto rounded-lg border border-gray-100 divide-y divide-gray-100">
+        {filtered.length === 0 ? (
+          <p className="text-center text-sm text-gray-400 py-6">{t('cg.teamNone')}</p>
+        ) : (
+          filtered.map((tm) => (
+            <div key={tm.id} className="flex items-center justify-between px-4 py-2.5">
+              <div className="min-w-0">
+                <p className="font-semibold text-gray-900 text-sm truncate">{tm.name}</p>
+                <p className="text-xs text-gray-400">
+                  {tm.members === 1 ? t('cg.teamMember') : t('cg.teamMembers', { count: tm.members })}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => join(tm.id)}
+                disabled={busy}
+                className="shrink-0 text-xs bg-[#1C5E90] text-white font-bold px-4 py-1.5 rounded-lg hover:bg-[#164a73] transition-colors disabled:opacity-40"
+              >
+                {t('cg.teamJoin')}
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="mt-5 pt-5 border-t border-gray-100">
+        <p className="text-sm font-semibold text-gray-700 mb-2">{t('cg.teamCreateTitle')}</p>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            className={TEAM_FIELD_CLASS}
+            value={newName}
+            onChange={(e) => { setNewName(e.target.value.slice(0, 40)); if (error) setError('') }}
+            placeholder={t('cg.teamCreatePlaceholder')}
+            maxLength={40}
+            aria-label={t('cg.teamCreatePlaceholder')}
+          />
+          <button
+            type="button"
+            onClick={create}
+            disabled={busy || newName.trim().length < 2}
+            className="shrink-0 bg-[#F1B82D] text-black font-bold px-4 rounded-lg hover:bg-[#d4a228] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+          >
+            {t('cg.teamCreate')}
+          </button>
+        </div>
+        {error && <p role="alert" className="text-red-500 text-xs mt-2">{error}</p>}
+      </div>
+    </div>
+  )
+}
 
 const CHALLENGE_START = new Date('2026-06-16T00:00:00')
 
@@ -159,6 +295,9 @@ function ProgressContent() {
             </div>
           )}
         </div>
+
+        {/* Team — join later if you flew solo at sign-up */}
+        <TeamCard code={code} />
 
         {/* Weekly chart */}
         {weeklyData.length > 0 && (
