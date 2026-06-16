@@ -129,6 +129,15 @@ create policy "logs_insert_anon" on activity_logs
     exists (select 1 from participants p where p.code = participant_code and p.banned = false)
   );
 
+-- Authenticated users (e.g. an admin who is also logging their own miles) can
+-- insert too. Without this, a logged-in admin's log attempts are silently
+-- denied by RLS (the anon policy above doesn't apply to the authenticated role).
+drop policy if exists "logs_insert_authenticated" on activity_logs;
+create policy "logs_insert_authenticated" on activity_logs
+  for insert to authenticated with check (
+    exists (select 1 from participants p where p.code = participant_code and p.banned = false)
+  );
+
 -- Admins can delete (reset data, moderation).
 drop policy if exists "logs_admin_delete" on activity_logs;
 create policy "logs_admin_delete" on activity_logs
