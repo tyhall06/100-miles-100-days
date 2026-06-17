@@ -313,6 +313,7 @@ function AdminDashboard({ onSignOut }) {
   const [allLogs, setAllLogs] = useState([])
   const [statewide, setStatewide] = useState({ totalParticipants: 0, totalMiles: 0, daysRemaining: 0 })
   const [teams, setTeams] = useState([])
+  const [participantSearch, setParticipantSearch] = useState('')
 
   async function refreshAll() {
     const [p, banned, pend, appr, rs, logs, sw, tm] = await Promise.all([
@@ -517,9 +518,19 @@ function AdminDashboard({ onSignOut }) {
 
         {/* Section 1: Display Name Moderation */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between gap-4 flex-wrap">
             <h2 className="font-bold text-[#000000]">Display Name Moderation</h2>
             <span className="text-xs text-gray-400">{participants.length} participants</span>
+          </div>
+          <div className="px-6 py-3 border-b border-gray-100">
+            <input
+              type="search"
+              value={participantSearch}
+              onChange={(e) => setParticipantSearch(e.target.value)}
+              placeholder="Search by code or display name…"
+              className="w-full sm:max-w-xs border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:border-[#F1B82D]"
+              aria-label="Search participants by code or display name"
+            />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -528,13 +539,19 @@ function AdminDashboard({ onSignOut }) {
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Code</th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Display Name</th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">County</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Team</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Team</th>
                   <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {participants.map((p) => {
+                {participants
+                  .filter((p) => {
+                    const q = participantSearch.trim().toLowerCase()
+                    if (!q) return true
+                    return p.code.includes(q) || (p.display_name || '').toLowerCase().includes(q)
+                  })
+                  .map((p) => {
                   const banned = bannedSet.has(p.code)
                   return (
                     <tr key={p.code} className="hover:bg-gray-50 transition-colors">
@@ -545,7 +562,7 @@ function AdminDashboard({ onSignOut }) {
                         )}
                       </td>
                       <td className="px-5 py-3 text-gray-500 hidden sm:table-cell">{p.county}</td>
-                      <td className="px-5 py-3 hidden md:table-cell">
+                      <td className="px-5 py-3">
                         <select
                           value={p.team_id || ''}
                           onChange={(e) => handleReassign(p.code, e.target.value)}

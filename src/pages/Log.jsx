@@ -63,6 +63,8 @@ function LogContent() {
   const [totalMiles, setTotalMiles] = useState(0)
   const [milestoneThreshold, setMilestoneThreshold] = useState(null)
   const [showHelper, setShowHelper] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   useEffect(() => {
     const code = getCode()
@@ -83,6 +85,7 @@ function LogContent() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (submitting) return  // guard against double-tap / double-submit
     const miles = calcMiles(form.value)
     if (!form.value || miles <= 0 || miles > MAX_MILES_PER_ENTRY) return
 
@@ -100,9 +103,19 @@ function LogContent() {
     const code = getCode()
     const crossed = findNewMilestone(code, priorTotal, newTotal)
 
-    await insertActivityLog(code, log)
+    setSubmitting(true)
+    setSubmitError('')
+    const { error } = await insertActivityLog(code, log)
+    if (error) {
+      // Don't show a fake "success" — tell the user it didn't save.
+      console.error('insertActivityLog:', error)
+      setSubmitError(t('log.saveError'))
+      setSubmitting(false)
+      return
+    }
     setLastLog(log)
     setSubmitted(true)
+    setSubmitting(false)
     if (crossed) {
       markCelebrated(code, crossed)
       setMilestoneThreshold(crossed)
@@ -115,6 +128,7 @@ function LogContent() {
     setLivePreview(0)
     setSubmitted(false)
     setLastLog(null)
+    setSubmitError('')
   }
 
   const overCap = livePreview > MAX_MILES_PER_ENTRY
@@ -398,13 +412,21 @@ function LogContent() {
 
           <button
             type="submit"
-            disabled={!form.value || livePreview <= 0 || overCap}
+            disabled={!form.value || livePreview <= 0 || overCap || submitting}
             className="w-full bg-[#F1B82D] text-black font-bold text-base py-4 rounded-xl hover:bg-[#d4a228] transition-colors shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {livePreview > 0 && !overCap
-              ? t('log.logNMiles', { n: livePreview })
-              : t('log.logActivity')}
+            {submitting
+              ? t('log.saving')
+              : livePreview > 0 && !overCap
+                ? t('log.logNMiles', { n: livePreview })
+                : t('log.logActivity')}
           </button>
+
+          {submitError && (
+            <p role="alert" className="text-red-600 text-sm font-semibold text-center">
+              {submitError}
+            </p>
+          )}
         </form>
       </div>
     </div>

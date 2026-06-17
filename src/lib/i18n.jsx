@@ -110,6 +110,8 @@ const STRINGS = {
     'log.optional': '(optional)',
     'log.notesPlaceholder': 'e.g. Morning walk with the dog',
     'log.logActivity': 'Log Activity',
+    'log.saving': 'Saving…',
+    'log.saveError': "Hmm — that didn't save. Please check your connection and try once more.",
     'log.logNMiles': 'Log {n} Miles',
     // Confirmation
     'log.confirm.title': 'Miles Logged!',
@@ -399,6 +401,8 @@ const STRINGS = {
     'log.optional': '(opcional)',
     'log.notesPlaceholder': 'ej. Caminata matutina con el perro',
     'log.logActivity': 'Registrar Actividad',
+    'log.saving': 'Guardando…',
+    'log.saveError': 'Mmm — no se guardó. Revisa tu conexión e inténtalo una vez más.',
     'log.logNMiles': 'Registrar {n} Millas',
     'log.confirm.title': '¡Millas Registradas!',
     'log.confirm.activity': 'Actividad',
