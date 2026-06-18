@@ -25,6 +25,8 @@ export default function Navbar() {
 
   const navLinks = [
     { to: '/', label: t('nav.home') },
+    // Shown once the person has entered their code (registered on this device).
+    ...(displayName ? [{ to: '/progress', label: t('nav.myProgress') }] : []),
     { to: '/leaderboard', label: t('nav.leaderboard') },
     { to: '/resources', label: t('nav.resources') },
     { to: '/community', label: t('nav.community') },
