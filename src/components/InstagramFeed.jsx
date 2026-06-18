@@ -13,7 +13,11 @@ import { useState, useEffect } from 'react'
 // Until VITE_BEHOLD_FEED_ID is set, this renders the placeholder grid so the
 // page never looks broken.
 
-const FEED_ID = import.meta.env.VITE_BEHOLD_FEED_ID
+// Served by the Cloudflare Pages Function at functions/api/instagram.js, which
+// fetches Behold a few times a day and caches it — so Behold isn't hit on every
+// page load (that blew the free-tier view cap). Falls back to placeholders if
+// the endpoint isn't available (e.g. local `npm run dev`).
+const FEED_ENDPOINT = '/api/instagram'
 
 function postImage(p) {
   return (
@@ -37,9 +41,8 @@ export default function InstagramFeed({
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
-    if (!FEED_ID) return
     let active = true
-    fetch(`https://feeds.behold.so/${FEED_ID}`)
+    fetch(FEED_ENDPOINT)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((data) => {
         if (!active) return
