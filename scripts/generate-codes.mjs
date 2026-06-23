@@ -43,6 +43,13 @@ import * as XLSX from 'xlsx'
 const CODE_MIN = 1000
 const CODE_MAX = 8999
 
+// ── Manual email corrections ──────────────────────────────────────────────────
+// PEARS sometimes has a typo'd email. Map registration_id -> correct email here;
+// it's re-applied on every run so a fresh PEARS pull won't reintroduce the typo.
+const EMAIL_OVERRIDES = {
+  '34517': 'kbenton50@hotmail.com', // Karen Benton (PEARS had knenton50@…)
+}
+
 // ── Tiny arg parser ───────────────────────────────────────────────────────────
 const args = process.argv.slice(2)
 const opts = { out: 'code-output', map: null, status: [] }
@@ -158,7 +165,7 @@ const mintedRecords = [] // only the codes newly created on THIS run
 for (const r of dataRows) {
   const regId = String(r[col('registration_id')]).trim()
   const status = col('status') >= 0 ? String(r[col('status')]).trim() : ''
-  const email = col('email') >= 0 ? String(r[col('email')]).trim() : ''
+  const email = EMAIL_OVERRIDES[regId] || (col('email') >= 0 ? String(r[col('email')]).trim() : '')
   const first = col('first_name') >= 0 ? String(r[col('first_name')]).trim() : ''
   const last = col('last_name') >= 0 ? String(r[col('last_name')]).trim() : ''
 
