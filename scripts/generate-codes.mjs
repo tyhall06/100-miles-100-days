@@ -47,7 +47,10 @@ const CODE_MAX = 8999
 // PEARS sometimes has a typo'd email. Map registration_id -> correct email here;
 // it's re-applied on every run so a fresh PEARS pull won't reintroduce the typo.
 const EMAIL_OVERRIDES = {
-  '34517': 'kbenton50@hotmail.com', // Karen Benton (PEARS had knenton50@…)
+  '34517': 'kbenton50@hotmail.com',    // Karen Benton (PEARS had knenton50@…)
+  '30786': 'brightjackie9@gmail.com',  // Jackie Bright (PEARS had …@gmail.net)
+  '35244': 'bjwretired@gmail.com',     // Barb Wilson  (PEARS had …@gmail.con)
+  '36042': 'donnavon@msn.com',         // Donna Nichols (PEARS had …@misn.com)
 }
 
 // ── Tiny arg parser ───────────────────────────────────────────────────────────
