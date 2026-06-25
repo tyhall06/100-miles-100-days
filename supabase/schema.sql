@@ -112,9 +112,11 @@ create policy "participants_admin_all" on participants
 -- Column-level hardening: RLS gates rows, column privileges gate columns.
 -- Without this, the anon key (public, embedded in the JS bundle) could write to
 -- `banned` directly via the REST API — letting a banned code unban itself.
--- Restrict anon UPDATE to exactly the three columns registration needs.
+-- Restrict anon UPDATE to exactly the columns registration + team-switch need.
+-- `team_changed` tracks the one-time self-service team switch (see team-switch-migration.sql).
+alter table participants add column if not exists team_changed boolean not null default false;
 revoke update on participants from anon;
-grant update (display_name, county, team_id) on participants to anon;
+grant update (display_name, county, team_id, team_changed) on participants to anon;
 
 -- ── activity_logs ──
 -- Anyone can read all logs (needed for leaderboard, no PII attached).

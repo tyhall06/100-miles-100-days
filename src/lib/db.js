@@ -317,6 +317,40 @@ export async function getParticipantTeamId(code) {
   return data?.team_id || null
 }
 
+// Read team_id + whether the participant has already used their one self-switch.
+// Resilient to the migration not having run yet: if the team_changed column
+// doesn't exist, falls back to team_id only (so the card still works correctly).
+export async function getParticipantTeamInfo(code) {
+  if (!HAS_SUPABASE) return { teamId: getTeamId(), teamChanged: false }
+  let { data, error } = await supabase
+    .from('participants')
+    .select('team_id, team_changed')
+    .eq('code', code)
+    .maybeSingle()
+  if (error) {
+    const res = await supabase
+      .from('participants')
+      .select('team_id')
+      .eq('code', code)
+      .maybeSingle()
+    if (res.error) { console.error('getParticipantTeamInfo', res.error); return { teamId: null, teamChanged: false } }
+    return { teamId: res.data?.team_id || null, teamChanged: false }
+  }
+  return { teamId: data?.team_id || null, teamChanged: !!data?.team_changed }
+}
+
+// Self-service team SWITCH (moving from one team to another). Sets team_changed
+// so the participant can't keep hopping; admins can clear the flag to allow more.
+export async function switchParticipantTeam(code, teamId) {
+  setLocalTeamSelection(teamId)
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase
+    .from('participants')
+    .update({ team_id: teamId, team_changed: true })
+    .eq('code', code)
+  return error ? err(error) : ok(null)
+}
+
 export async function getTeamLeaderboard() {
   if (!HAS_SUPABASE) return mockTeamLeaderboard()
   const { data, error } = await supabase

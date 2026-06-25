@@ -6,7 +6,8 @@ import {
 import CodeGate from '../components/CodeGate'
 import { getCode, getDisplayName, getCounty } from '../lib/storage'
 import {
-  getMyActivityLogs, getTeams, createTeam, setParticipantTeam, getParticipantTeamId,
+  getMyActivityLogs, getTeams, createTeam, setParticipantTeam,
+  getParticipantTeamInfo, switchParticipantTeam,
 } from '../lib/db'
 import { isProfane } from '../lib/filter'
 import { useI18n } from '../lib/i18n'
@@ -15,12 +16,16 @@ const TEAM_FIELD_CLASS =
   'w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 text-sm ' +
   'focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:border-[#F1B82D] transition-colors'
 
-// Lets a participant who skipped (or wants to join) a team do so after sign-up.
-// Reuses the same DB calls as registration — purely additive, no schema change.
+// Team card on My Progress. Solo participants can join/create a team freely.
+// Participants already on a team get ONE self-service switch (tracked by
+// team_changed); after that it locks to "contact staff." Admins can reassign
+// anyone anytime (and clear team_changed to grant another switch).
 function TeamCard({ code }) {
   const { t } = useI18n()
   const [teams, setTeams] = useState([])
   const [myTeamId, setMyTeamId] = useState(undefined) // undefined = still loading
+  const [teamChanged, setTeamChanged] = useState(false)
+  const [switching, setSwitching] = useState(false)    // on-team user opened the picker
   const [search, setSearch] = useState('')
   const [newName, setNewName] = useState('')
   const [busy, setBusy] = useState(false)
@@ -28,8 +33,12 @@ function TeamCard({ code }) {
 
   useEffect(() => {
     if (!code) return
-    Promise.all([getTeams(), getParticipantTeamId(code)])
-      .then(([list, tid]) => { setTeams(list || []); setMyTeamId(tid || null) })
+    Promise.all([getTeams(), getParticipantTeamInfo(code)])
+      .then(([list, info]) => {
+        setTeams(list || [])
+        setMyTeamId(info.teamId || null)
+        setTeamChanged(!!info.teamChanged)
+      })
       .catch((e) => { console.error('TeamCard', e); setMyTeamId(null) })
   }, [code])
 
@@ -38,18 +47,22 @@ function TeamCard({ code }) {
     tm.name.toLowerCase().includes(search.trim().toLowerCase())
   )
 
-  async function join(teamId) {
+  // isSwitch = moving FROM an existing team (consumes the one-time change).
+  async function choose(teamId, isSwitch) {
+    if (teamId === myTeamId) return
     setBusy(true); setError('')
     try {
-      await setParticipantTeam(code, teamId)
+      if (isSwitch) { await switchParticipantTeam(code, teamId); setTeamChanged(true) }
+      else { await setParticipantTeam(code, teamId) }
       setMyTeamId(teamId)
+      setSwitching(false)
       getTeams().then((l) => setTeams(l || [])).catch(() => {})
     } catch (e) {
-      console.error('join team', e); setError(t('cg.teamErr'))
+      console.error('choose team', e); setError(t('cg.teamErr'))
     } finally { setBusy(false) }
   }
 
-  async function create() {
+  async function create(isSwitch) {
     const name = newName.trim()
     if (name.length < 2 || name.length > 40) { setError(t('cg.teamErrName')); return }
     if (isProfane(name)) { setError(t('cg.teamErrProfane')); return }
@@ -59,12 +72,75 @@ function TeamCard({ code }) {
     if (createErr || !data) { setBusy(false); setError(t('cg.teamErr')); return }
     if (data.existed) window.alert(t('cg.teamExisted'))
     setNewName('')
-    await join(data.id)
+    await choose(data.id, isSwitch)
   }
 
   if (myTeamId === undefined) return null // avoid flicker while loading
 
-  // Already on a team — show it; switching stays an admin action (no team-hopping).
+  // Shared picker (search + team list + create). isSwitch routes the action.
+  function picker(isSwitch) {
+    return (
+      <>
+        <input
+          type="search"
+          className={TEAM_FIELD_CLASS}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={t('cg.teamSearch')}
+          aria-label={t('cg.teamSearch')}
+        />
+        <div className="mt-3 max-h-52 overflow-y-auto rounded-lg border border-gray-100 divide-y divide-gray-100">
+          {filtered.length === 0 ? (
+            <p className="text-center text-sm text-gray-400 py-6">{t('cg.teamNone')}</p>
+          ) : (
+            filtered.map((tm) => (
+              <div key={tm.id} className="flex items-center justify-between px-4 py-2.5">
+                <div className="min-w-0">
+                  <p className="font-semibold text-gray-900 text-sm truncate">{tm.name}</p>
+                  <p className="text-xs text-gray-400">
+                    {tm.members === 1 ? t('cg.teamMember') : t('cg.teamMembers', { count: tm.members })}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => choose(tm.id, isSwitch)}
+                  disabled={busy || tm.id === myTeamId}
+                  className="shrink-0 text-xs bg-[#1C5E90] text-white font-bold px-4 py-1.5 rounded-lg hover:bg-[#164a73] transition-colors disabled:opacity-40"
+                >
+                  {tm.id === myTeamId ? t('prog.team.current') : t('cg.teamJoin')}
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+        <div className="mt-5 pt-5 border-t border-gray-100">
+          <p className="text-sm font-semibold text-gray-700 mb-2">{t('cg.teamCreateTitle')}</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              className={TEAM_FIELD_CLASS}
+              value={newName}
+              onChange={(e) => { setNewName(e.target.value.slice(0, 40)); if (error) setError('') }}
+              placeholder={t('cg.teamCreatePlaceholder')}
+              maxLength={40}
+              aria-label={t('cg.teamCreatePlaceholder')}
+            />
+            <button
+              type="button"
+              onClick={() => create(isSwitch)}
+              disabled={busy || newName.trim().length < 2}
+              className="shrink-0 bg-[#F1B82D] text-black font-bold px-4 rounded-lg hover:bg-[#d4a228] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+            >
+              {t('cg.teamCreate')}
+            </button>
+          </div>
+          {error && <p role="alert" className="text-red-500 text-xs mt-2">{error}</p>}
+        </div>
+      </>
+    )
+  }
+
+  // Already on a team.
   if (myTeamId) {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -72,74 +148,39 @@ function TeamCard({ code }) {
         <p className="text-sm text-gray-700">
           {t('prog.team.onTeam', { team: myTeam ? myTeam.name : '—' })}
         </p>
-        <p className="text-xs text-gray-400 mt-2">{t('prog.team.lockedNote')}</p>
+        {teamChanged ? (
+          <p className="text-xs text-gray-400 mt-2">{t('prog.team.usedNote')}</p>
+        ) : switching ? (
+          <div className="mt-4">
+            <p className="text-xs text-gray-500 mb-3">{t('prog.team.switchHint')}</p>
+            {picker(true)}
+            <button
+              type="button"
+              onClick={() => { setSwitching(false); setError('') }}
+              className="mt-3 text-xs text-gray-500 hover:text-gray-800 underline"
+            >
+              {t('prog.team.cancel')}
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setSwitching(true)}
+            className="mt-3 text-sm font-semibold text-[#1C5E90] border border-[#1C5E90] px-4 py-2 rounded-lg hover:bg-[#1C5E90] hover:text-white transition-colors"
+          >
+            {t('prog.team.switchBtn')}
+          </button>
+        )}
       </div>
     )
   }
 
-  // Flying solo — let them join or create a team now.
+  // Flying solo — join or create a team now (doesn't consume the one-time switch).
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 className="font-bold text-[#000000] mb-1">{t('prog.team.soloTitle')}</h2>
       <p className="text-sm text-gray-500 mb-4">{t('prog.team.soloSub')}</p>
-
-      <input
-        type="search"
-        className={TEAM_FIELD_CLASS}
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder={t('cg.teamSearch')}
-        aria-label={t('cg.teamSearch')}
-      />
-
-      <div className="mt-3 max-h-52 overflow-y-auto rounded-lg border border-gray-100 divide-y divide-gray-100">
-        {filtered.length === 0 ? (
-          <p className="text-center text-sm text-gray-400 py-6">{t('cg.teamNone')}</p>
-        ) : (
-          filtered.map((tm) => (
-            <div key={tm.id} className="flex items-center justify-between px-4 py-2.5">
-              <div className="min-w-0">
-                <p className="font-semibold text-gray-900 text-sm truncate">{tm.name}</p>
-                <p className="text-xs text-gray-400">
-                  {tm.members === 1 ? t('cg.teamMember') : t('cg.teamMembers', { count: tm.members })}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => join(tm.id)}
-                disabled={busy}
-                className="shrink-0 text-xs bg-[#1C5E90] text-white font-bold px-4 py-1.5 rounded-lg hover:bg-[#164a73] transition-colors disabled:opacity-40"
-              >
-                {t('cg.teamJoin')}
-              </button>
-            </div>
-          ))
-        )}
-      </div>
-
-      <div className="mt-5 pt-5 border-t border-gray-100">
-        <p className="text-sm font-semibold text-gray-700 mb-2">{t('cg.teamCreateTitle')}</p>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className={TEAM_FIELD_CLASS}
-            value={newName}
-            onChange={(e) => { setNewName(e.target.value.slice(0, 40)); if (error) setError('') }}
-            placeholder={t('cg.teamCreatePlaceholder')}
-            maxLength={40}
-            aria-label={t('cg.teamCreatePlaceholder')}
-          />
-          <button
-            type="button"
-            onClick={create}
-            disabled={busy || newName.trim().length < 2}
-            className="shrink-0 bg-[#F1B82D] text-black font-bold px-4 rounded-lg hover:bg-[#d4a228] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
-          >
-            {t('cg.teamCreate')}
-          </button>
-        </div>
-        {error && <p role="alert" className="text-red-500 text-xs mt-2">{error}</p>}
-      </div>
+      {picker(false)}
     </div>
   )
 }
