@@ -145,6 +145,11 @@ drop policy if exists "logs_admin_delete" on activity_logs;
 create policy "logs_admin_delete" on activity_logs
   for delete to authenticated using (true);
 
+-- Admins can edit a log (fix a wrong date/mileage via the admin panel).
+drop policy if exists "logs_admin_update" on activity_logs;
+create policy "logs_admin_update" on activity_logs
+  for update to authenticated using (true) with check (true);
+
 -- ── community_submissions ──
 -- Public (anon) reads ONLY approved.
 drop policy if exists "submissions_select_approved" on community_submissions;

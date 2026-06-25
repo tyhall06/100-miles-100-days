@@ -7,6 +7,7 @@ import {
   getAnnouncement, setAnnouncement,
   getTeams, renameTeam, deleteTeam, mergeTeams, reassignParticipant,
   importParticipantCodes,
+  getMyActivityLogs, deleteActivityLog, updateActivityLog,
 } from '../lib/db'
 import { toCSV, downloadCSV } from '../lib/csv'
 import { signInAdmin, signOutAdmin, getAdminSession, onAuthChange } from '../lib/auth'
@@ -290,6 +291,146 @@ function CodeImporter({ onImported }) {
   )
 }
 
+function LogRow({ log, busy, onSave, onDelete }) {
+  const [date, setDate] = useState(log.date)
+  const [miles, setMiles] = useState(String(log.miles))
+  const dirty = date !== log.date || Number(miles) !== Number(log.miles)
+  return (
+    <tr className="hover:bg-gray-50 transition-colors">
+      <td className="px-4 py-2.5">
+        <input
+          type="date" min="2026-06-16" max="2026-09-24" value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
+        />
+      </td>
+      <td className="px-4 py-2.5 text-gray-700">{log.activity_type}</td>
+      <td className="px-4 py-2.5">
+        <input
+          type="number" min="0.01" max="50" step="0.01" value={miles}
+          onChange={(e) => setMiles(e.target.value)}
+          className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1B82D]"
+        />
+      </td>
+      <td className="px-4 py-2.5 text-gray-400 text-xs hidden md:table-cell max-w-[12rem] truncate">{log.notes || '—'}</td>
+      <td className="px-4 py-2.5">
+        <div className="flex gap-2 justify-end">
+          <button
+            type="button"
+            onClick={() => onSave(log.id, date, Number(miles))}
+            disabled={busy || !dirty || !date || !(Number(miles) > 0)}
+            className="text-xs bg-[#F1B82D] text-black font-bold px-3 py-1.5 rounded-lg hover:bg-[#d4a228] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => onDelete(log.id)}
+            disabled={busy}
+            className="text-xs bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-colors font-semibold disabled:opacity-40"
+          >
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  )
+}
+
+function LogEditor() {
+  const [codeInput, setCodeInput] = useState('')
+  const [loadedCode, setLoadedCode] = useState('')
+  const [logs, setLogs] = useState(null) // null = nothing loaded yet
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  async function load(e) {
+    e?.preventDefault?.()
+    const c = codeInput.trim()
+    if (!/^\d{4}$/.test(c)) { setMsg('Enter a 4-digit code.'); return }
+    setBusy(true); setMsg('')
+    const data = await getMyActivityLogs(c)
+    setLogs(data); setLoadedCode(c); setBusy(false)
+    if (!data.length) setMsg('No activity logged under this code.')
+  }
+
+  async function handleSave(id, date, miles) {
+    setBusy(true); setMsg('')
+    const { error } = await updateActivityLog(id, { date, miles })
+    if (error) { setBusy(false); setMsg('Save failed: ' + (error.message || 'unknown error')); return }
+    const data = await getMyActivityLogs(loadedCode)
+    setLogs(data); setBusy(false); setMsg('Entry updated ✓')
+  }
+
+  async function handleDelete(id) {
+    if (!window.confirm('Permanently delete this activity entry?')) return
+    setBusy(true); setMsg('')
+    const { error } = await deleteActivityLog(id)
+    if (error) { setBusy(false); setMsg('Delete failed: ' + (error.message || 'unknown error')); return }
+    setLogs((ls) => (ls || []).filter((l) => l.id !== id))
+    setBusy(false); setMsg('Entry deleted ✓')
+  }
+
+  const total = logs ? logs.reduce((s, l) => s + Number(l.miles), 0).toFixed(2) : '0'
+
+  return (
+    <section className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
+        <h2 className="font-bold text-[#000000]">Fix Participant Logs</h2>
+      </div>
+      <div className="p-6 space-y-4">
+        <p className="text-sm text-gray-500">
+          Look up a participant by their 4-digit code to correct a wrong date or
+          mileage, or delete a mistaken entry (e.g. an accidental duplicate).
+        </p>
+        <form onSubmit={load} className="flex gap-2">
+          <input
+            type="text" inputMode="numeric" maxLength={4} value={codeInput}
+            onChange={(e) => setCodeInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            placeholder="4-digit code"
+            className="w-40 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F1B82D] focus:border-[#F1B82D]"
+          />
+          <button
+            type="submit" disabled={busy}
+            className="bg-[#1C5E90] text-white font-bold px-5 py-2 rounded-lg hover:bg-[#164a73] transition-colors disabled:opacity-40 text-sm"
+          >
+            Load logs
+          </button>
+        </form>
+
+        {msg && <p className="text-sm font-medium text-gray-700">{msg}</p>}
+
+        {logs && logs.length > 0 && (
+          <div className="overflow-x-auto">
+            <p className="text-xs text-gray-400 mb-2">
+              Code <span className="font-mono">{loadedCode}</span> — {logs.length} entries, {total} mi total
+            </p>
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-y border-gray-100">
+                <tr>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Activity</th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Miles</th>
+                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Notes</th>
+                  <th className="px-4 py-2.5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {logs.map((log) => (
+                  <LogRow key={log.id} log={log} busy={busy} onSave={handleSave} onDelete={handleDelete} />
+                ))}
+              </tbody>
+            </table>
+            <p className="text-xs text-gray-400 mt-3">
+              Change a Date or Miles value, then click <strong>Save</strong>. Deletes are permanent.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
 function ExportButton({ icon, title, onClick }) {
   return (
     <button
@@ -502,6 +643,9 @@ function AdminDashboard({ onSignOut }) {
 
         {/* Section -0.5: Import participant codes */}
         <CodeImporter onImported={refreshAll} />
+
+        {/* Section -0.4: Fix a participant's activity logs */}
+        <LogEditor />
 
         {/* Section 0: Challenge Overview */}
         <section>

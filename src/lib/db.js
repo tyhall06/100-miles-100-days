@@ -158,6 +158,20 @@ export async function getMyActivityLogs(code) {
   return data || []
 }
 
+// Admin: delete a single activity log by id (allowed by logs_admin_delete).
+export async function deleteActivityLog(id) {
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase.from('activity_logs').delete().eq('id', id)
+  return error ? err(error) : ok(null)
+}
+
+// Admin: correct a log's date and/or miles (needs logs_admin_update policy).
+export async function updateActivityLog(id, fields) {
+  if (!HAS_SUPABASE) return ok(null)
+  const { error } = await supabase.from('activity_logs').update(fields).eq('id', id)
+  return error ? err(error) : ok(null)
+}
+
 export async function getAllActivityLogs() {
   if (!HAS_SUPABASE) return mockActivityLogs
   const { data, error } = await supabase
