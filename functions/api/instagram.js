@@ -9,7 +9,9 @@
 // Served at:  /api/instagram   (the InstagramFeed component fetches this)
 
 const FALLBACK_FEED_ID = 'YcAFUdHFHAb61hXirByX'
-const CACHE_TTL = 21600 // seconds (6 hours). Increase to hit Behold even less.
+// 24h cache: Behold is fetched ~once/day per edge location, so monthly views stay
+// well under Behold's free 1,500 cap (≈100–400/mo) while the feed still updates daily.
+const CACHE_TTL = 86400 // seconds (24 hours)
 
 export async function onRequest(context) {
   const feedId = (context.env && context.env.VITE_BEHOLD_FEED_ID) || FALLBACK_FEED_ID
