@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnnouncementBanner from './components/AnnouncementBanner'
+import SurveyBanner from './components/SurveyBanner'
 import SkipLink from './components/SkipLink'
 import LangSync from './components/LangSync'
 import { I18nProvider } from './lib/i18n'
@@ -26,6 +27,7 @@ export default function App() {
           <SkipLink />
           <Navbar />
           <AnnouncementBanner />
+          <SurveyBanner />
           <main id="main-content" tabIndex={-1} className="flex-1">
             <Routes>
               <Route path="/" element={<Home />} />
